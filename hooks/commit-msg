@@ -5,8 +5,13 @@ validate_commit_message() {
     single_spaced_string=$(echo "$1" | tr -s '[:space:]')
     commit_message="$1"
 
-    # Use node to check the regex
 
+    if [[ $commit_message == "Merge branch"* ]]; then
+        echo -e "\e[94mMerge commits are allowed\e[0m"
+        return
+    fi
+
+    # Use node to check the regex
     isValid=$(node -e "const regex = /^\w+-\d+(( #comment .+\S)( #time .+\S)|( #time .+\S)( #comment .+\S))?$/gm; console.log(regex.test('$commit_message'));")
 
     # Check if commit message follows the Smart Commit syntax
