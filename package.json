@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "git config core.hooksPath hooks",
+    "preinstall": "node -e \"const fs = require('fs'); if (fs.existsSync('.git')) { require('child_process').execSync('git config core.hooksPath hooks'); }\"",
     "format": "prettier-eslint --write \"**/*.{js,cjs,jsx,ts,tsx,json,css,scss}\"",
     "lint": "eslint --fix",
     "lint-compact": "eslint --fix --format unix",
