@@ -1,0 +1,29 @@
+{
+  "name": "hotel-reservation-system-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "git config core.hooksPath hooks",
+    "format": "prettier-eslint --write \"**/*.{js,cjs,jsx,ts,tsx,json,css,scss}\"",
+    "lint": "eslint --fix",
+    "lint-compact": "eslint --fix --format unix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "express": "^4.19.2",
+    "express-validator": "^7.0.1",
+    "morgan": "^1.10.0",
+    "prettier": "^3.2.5",
+    "prettier-eslint": "^16.3.0",
+    "prettier-eslint-cli": "^8.0.1"
+  }
+}

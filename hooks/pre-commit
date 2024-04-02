@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# runing prettier
+echo -e "\e[95mRunning Prettier on every file\e[0m"
+npm run format
+
+if [ $? -ne 0 ]; then
+    echo -e "\e[91mError occurred while trying to run prettier, check your installation or the `npm run format` command on package.json\e[0m"
+fi
+echo ""
+
+# Variable to track if there's any error during linting
+error_occurred=false
+
+# Get staged files with extensions .js, .ts, .jsx, .tsx
+staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|cjs|ts|jsx|tsx)$')
+
+# run again git add so it takes in consideration prettier changes
+git add $staged_files
+
+echo -e "\e[95mRunning ESLint on all staged files\e[0m"
+
+if [ -z "$staged_files" ]; then
+    echo -e "\e[93mNo JavaScript or TypeScript files staged for commit. Proceeding with the commit.\e[0m"
+    echo ""
+    exit 0
+fi
+
+
+# Run ESLint on all staged files
+npm run lint $staged_files
+
+# Check if there's an error
+if [ $? -ne 0 ]; then
+    echo -e "\e[91mError occurred while running ESLint on some files\e[0m"
+    # Split the staged_files_string into an array based on commas
+    IFS=',' read -ra error_files <<< "$staged_files_string"
+    error_occurred=true
+fi
+
+# If an error occurred during linting or formatting, prevent the commit
+if [ "$error_occurred" = true ]; then
+    echo -e "\e[91mCommit aborted due to linting or formatting errors. Please fix them before committing.\e[0m"
+    exit 1
+else
+    echo -e "\e[94mLinting and formatting successful. Proceeding with the commit.\e[0m"
+fi
+
+echo ""
+exit 0
