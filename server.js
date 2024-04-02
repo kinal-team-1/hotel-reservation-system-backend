@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.text("Hola, server funcionando");
+  res.send("Hola, server funcionando");
 });
 
 app.listen(PORT, () => {
