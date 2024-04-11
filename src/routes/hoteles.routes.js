@@ -72,24 +72,18 @@ router.post(
     body(
       "name",
       "El nombre de ser definido, no puede estar vacío, debe tener 4 caracteres minimo",
-    )
-      .optional()
-      .isLength({ min: 4 }),
-    body("country", "El país donde se ubica el hotel es necesario")
-      .optional()
-      .isLength({ min: 3 }),
+    ).isLength({ min: 4 }),
+    body("country", "El país donde se ubica el hotel es necesario").isLength({
+      min: 3,
+    }),
     body(
       "address",
       "La dirección se necesitra saber para poder ubicar de mejor manera",
-    )
-      .optional()
-      .isLength({ min: 10 }),
+    ).isLength({ min: 10 }),
     body(
       "description",
       "La descripción debe ser clara y entendible para los clientes",
-    )
-      .optional()
-      .isLength({ min: 30 }),
+    ).isLength({ min: 30 }),
     validateRequestParams,
   ],
   hotelPost,
