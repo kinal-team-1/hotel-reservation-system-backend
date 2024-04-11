@@ -1,5 +1,5 @@
 import bcryptjs from "bcryptjs";
-import UserModel from "../user/user.model.js";
+import UserModel from "../model/user.model.js";
 import { generateToken } from "../helpers/jwt.js";
 
 export const login = async (req, res) => {
@@ -15,8 +15,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    const token = await generateToken(user);
-
+    const token = await generateToken(user.toJSON());
     res.status(200).json({ message: "Login successful", user, token });
   } catch (error) {
     console.error("Error logging in:", error);
