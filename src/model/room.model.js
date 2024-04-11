@@ -1,6 +1,6 @@
 import { Schema, model } from "moongose";
 
-const habitacionSchema = new Schema({
+const roomSchema = new Schema({
   description: {
     type: String,
     required: [true, "la descripcion es requerida"],
@@ -35,6 +35,6 @@ const habitacionSchema = new Schema({
   },
 });
 
-const habitacionModel = model("Habitacion", habitacionSchema);
+const roomModel = model("Habitacion", roomSchema);
 
-export default habitacionModel;
+export default roomModel;
