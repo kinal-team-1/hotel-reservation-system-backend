@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
 import { isAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
@@ -13,7 +13,23 @@ import {
 
 const router = Router();
 
-router.get("/", [validateJwt, isAdminLogged], hotelImagesGet);
+router.get(
+  "/",
+  [
+    validateJwt,
+    isAdminLogged,
+    query("limite")
+      .optional()
+      .isNumeric()
+      .withMessage("El límite debe ser un valor numérico"),
+    query("desde")
+      .optional()
+      .isNumeric()
+      .withMessage("El valor desde debe ser numérico"),
+    validateRequestParams,
+  ],
+  hotelImagesGet,
+);
 
 router.get(
   "/:id",
@@ -34,6 +50,15 @@ router.put(
     isAdminLogged,
     param("id", "No es un id válido").isMongoId(),
     param("id").isMongoId(),
+    body("image_url")
+      .optional()
+      .not()
+      .isEmpty()
+      .withMessage("La URL de la imagen no puede estar vacía"),
+    body("is_main_image")
+      .optional()
+      .isBoolean()
+      .withMessage("El campo is_main_image debe ser un booleano"),
     validateRequestParams,
   ],
   putHotelImage,
