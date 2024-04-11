@@ -18,14 +18,9 @@ router.get(
   [
     validateJwt,
     isAdminLogged,
-    query("limite")
+    query("hotel_id", "El hotel_id no es un ObjectId válido")
       .optional()
-      .isNumeric()
-      .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
-      .optional()
-      .isNumeric()
-      .withMessage("El valor desde debe ser numérico"),
+      .isMongoId(),
     validateRequestParams,
   ],
   hotelImagesGet,
