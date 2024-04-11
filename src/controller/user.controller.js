@@ -62,6 +62,11 @@ export const updateUserById = async (req, res) => {
     }
   });
 
+  if (userUpdated.password) {
+    const salt = bcryptjs.genSaltSync();
+    userUpdated.password = bcryptjs.hashSync(userUpdated.password, salt);
+  }
+
   const user = await UserModel.findOneAndUpdate(
     { _id: id, tp_status: "ACTIVE" },
     userUpdated,

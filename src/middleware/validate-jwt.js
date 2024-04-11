@@ -9,9 +9,9 @@ export const validateJwt = async (req, res, next) => {
   }
 
   try {
-    const { uid } = jwt.verify(token, process.env.SECRET_PRIVATE_KEY);
-    const user = await User.findOne({ _id: uid, tp_status: true });
-    console.log({ uid, user });
+    const { _id } = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ _id, tp_status: "ACTIVE" });
+    console.log({ _id, user });
 
     if (!user) {
       return res
