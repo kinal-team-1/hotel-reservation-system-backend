@@ -1,7 +1,11 @@
 import { model, Schema } from "mongoose";
 
 // Definir los roles
-const [ADMIN_ROLE, CLIENT_ROLE] = ["ADMIN_ROLE", "CLIENT_ROLE"];
+export const [ADMIN_HOTEL_ROLE, CLIENT_ROLE, ADMIN_PLATFORM_ROLE] = [
+  "ADMIN_HOTEL_ROLE",
+  "CLIENT_ROLE",
+  "ADMIN_PLATFORM_ROLE",
+];
 
 // Definir el esquema del usuario
 const UserSchema = new Schema({
@@ -32,7 +36,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: String,
-    enum: [ADMIN_ROLE, CLIENT_ROLE],
+    enum: [ADMIN_HOTEL_ROLE, CLIENT_ROLE],
     required: true,
   },
   tp_status: {

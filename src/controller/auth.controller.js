@@ -1,14 +1,8 @@
 import bcryptjs from "bcryptjs";
 import UserModel from "../user/user.model.js";
 import { generateToken } from "../helpers/jwt.js";
-import { validationResult } from "express-validator";
 
 export const login = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { email, password } = req.body;
   try {
     const user = await UserModel.findOne({ email, tp_status: "ACTIVE" });
@@ -31,11 +25,6 @@ export const login = async (req, res) => {
 };
 
 export const signup = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { email, password, name, lastname, role } = req.body;
   try {
     const salt = bcryptjs.genSaltSync();
@@ -50,7 +39,9 @@ export const signup = async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json({ message: "User created successfully", user: newUser });
+    res
+      .status(201)
+      .json({ message: "User created successfully", user: newUser });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ message: "Internal server error" });
