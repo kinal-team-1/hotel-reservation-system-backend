@@ -4,12 +4,12 @@ import { body, param } from "express-validator";
 //import { isAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
-  putHotel,
-  hotelPost,
-  hotelsGet,
-  getHotelById,
-  hotelDelete,
-} from "../controller/hoteles.controller.js";
+  putHotelImage,
+  hotelImagePost,
+  hotelImagesGet,
+  getHotelImageById,
+  hotelImageDelete,
+} from "../controller/hotelImg.controller.js";
 
 const router = Router();
 
@@ -17,9 +17,9 @@ router.get(
   "/",
   [
     //        validateJwt,
-    //       isAdminLogged
+    //        isAdminLogged
   ],
-  hotelsGet,
+  hotelImagesGet,
 );
 
 router.get(
@@ -31,19 +31,19 @@ router.get(
     param("id").isMongoId(),
     validateRequestParams,
   ],
-  getHotelById,
+  getHotelImageById,
 );
 
 router.put(
   "/:id",
   [
-    //  validateJwt,
+    //    validateJwt,
     //    isAdminLogged,
     param("id", "No es un id válido").isMongoId(),
     param("id").isMongoId(),
     validateRequestParams,
   ],
-  putHotel,
+  putHotelImage,
 );
 
 router.post(
@@ -51,13 +51,15 @@ router.post(
   [
     //    validateJwt,
     //    isAdminLogged,
-    body("name", "El nombre no puede estar vacío").not().isEmpty(),
-    body("country", "El país es obligatorio").not().isEmpty(),
-    body("address", "La dirección es obligatoria").not().isEmpty(),
-    body("description", "La descripción es obligatoria").not().isEmpty(),
+    body("image_url", "La URL de la imagen es requerida").not().isEmpty(),
+    body("hotel_id", "El ID del hotel es requerido").isMongoId(),
+    body(
+      "is_main_image",
+      "El valor de is_main_image debe ser un booleano",
+    ).isBoolean(),
     validateRequestParams,
   ],
-  hotelPost,
+  hotelImagePost,
 );
 
 router.delete(
@@ -69,7 +71,7 @@ router.delete(
     param("id").isMongoId(),
     validateRequestParams,
   ],
-  hotelDelete,
+  hotelImageDelete,
 );
 
 export default router;
