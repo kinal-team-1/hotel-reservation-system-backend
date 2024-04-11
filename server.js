@@ -5,11 +5,15 @@ import morgan from "morgan";
 import { dbConnection } from "./src/db/db-connection.js";
 import userRoutes from "./src/routes/user.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
+import hotelRoutes from "./src/routes/hoteles.routes.js";
 dotenv.config();
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
+
+dbConnection().then(() => {
+  console.log("Database connected");
+});
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +25,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/hotel", hotelRoutes);
 
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Not found" });
