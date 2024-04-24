@@ -23,7 +23,7 @@ const serviceSchema = new Schema({
   },
   hotel_id: {
     type: Schema.Types.ObjectId,
-    ref: "Hotel", // Referencia al modelo Hotel
+    ref: "Hotel",
     required: [true, "El ID del hotel es requerido"],
   },
 });
