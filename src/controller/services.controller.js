@@ -1,4 +1,4 @@
-import serviceModel from "../model/services.model";
+import serviceModel from "../model/services.model.js";
 import { response } from "express";
 
 export const servicesGet = async (req, res = response) => {
