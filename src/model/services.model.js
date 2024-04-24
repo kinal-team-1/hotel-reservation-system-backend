@@ -11,20 +11,19 @@ const serviceSchema = new Schema({
   },
   tp_status: {
     type: String,
-    required: [true, "El estado del servicio es requerido"],
+    required: [true, "El estado del hotel es requerido"],
     enum: ["ACTIVE", "INACTIVE"],
   },
   duration: {
-    type: Number,
+    type: Date,
     required: [true, "La duración es requerida"],
   },
   price: {
     type: Number,
-    required: [true, "El precio es requerido"],
   },
   hotel_id: {
     type: Schema.Types.ObjectId,
-    ref: "Hotel",
+    ref: "Hotel", // Referencia al modelo Hotel
     required: [true, "El ID del hotel es requerido"],
   },
 });
