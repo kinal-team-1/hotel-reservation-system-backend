@@ -1,13 +1,13 @@
 import bookingModel from "../model/booking.model.js";
 import { response } from "express";
 
-export const bookingsGet = async (req, res = response) => {
+export const bookingGet = async (req, res = response) => {
   const { limit, desde } = req.query;
   const query = { tp_status: "ACTIVE" };
 
   const [total, bookings] = await Promise.all([
     bookingModel.countDocuments(query),
-    bookingModel.find(query).desde(Number(desde)).limit(Number(limit)),
+    bookingModel.find(query).skip(page * limit).limit(limit)
   ]);
 
   res.status(200).json({
@@ -21,7 +21,7 @@ export const getBookingById = async (req, res) => {
   const booking = await bookingModel.findById(id);
   if (!booking) {
     return res.status(404).json({
-      msg: "Reserva no encontrada",
+      msg: "Reservation not found",
     });
   }
 
@@ -41,18 +41,22 @@ export const putBooking = async (req, res = response) => {
     updated_at: new Date(),
   };
 
-  const updatedBooking = await bookingModel.findByIdAndUpdate(id, bookingToUpdate, {
-    new: true,
-  });
+  const updatedBooking = await bookingModel.findByIdAndUpdate(
+    id,
+    bookingToUpdate,
+    {
+      new: true,
+    }
+  );
 
   if (!updatedBooking) {
     return res.status(404).json({
-      msg: "Reserva no encontrada",
+      msg: "Reservation not found",
     });
   }
 
   res.status(200).json({
-    msg: "Reserva actualizada exitosamente",
+    msg: "Reservation successfully updated",
     booking: updatedBooking,
   });
 };
@@ -63,31 +67,47 @@ export const bookingDelete = async (req, res) => {
   const booking = await bookingModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
-    { new: true },
+    { new: true }
   );
 
   if (!booking) {
     return res.status(404).json({
-      msg: "Reserva no encontrada",
+      msg: "Reservation not found",
     });
   }
 
   res.status(200).json({
-    msg: "Reserva eliminada exitosamente",
+    msg: "Reservation successfully deleted",
     booking,
   });
 };
 
 export const bookingPost = async (req, res) => {
-  const { date_start, date_end, tp_status } = req.body;
+  const { date_start, date_end, tp_status, room_id, user_id } = req.body;
+
+  if (!date_start || !date_end || !tp_status || !room_id || !user_id) {
+    return res.status(400).json({
+      msg: "Please provide all required fields,
+    });
+  }
+
   const booking = new bookingModel({
     date_start,
     date_end,
     tp_status,
+    room_id,
+    user_id,
   });
 
-  await booking.save();
-  res.status(201).json({
-    booking,
-  });
+  try {
+    await booking.save();
+    res.status(201).json({
+      booking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+      error: error.message,
+    });
+  }
 };

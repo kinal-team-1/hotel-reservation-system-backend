@@ -2,7 +2,6 @@ import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
-
 import {
   bookingsGet,
   getBookingById,
@@ -19,11 +18,11 @@ router.get(
     query("limit")
       .optional()
       .isNumeric()
-      .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
+      .withMessage("Limit must be a numeric value"),
+    query("page") 
       .optional()
       .isNumeric()
-      .withMessage("El valor desde debe ser numérico"),
+      .withMessage("Page must be a numeric value"),
     validateRequestParams,
   ],
   bookingsGet,
@@ -40,9 +39,9 @@ router.put(
   [
     validateJwt,
     param("id").isMongoId(),
-    body("date_start", "La fecha de inicio es requerida").notEmpty(),
-    body("date_end", "La fecha de fin es requerida").notEmpty(),
-    body("tp_status", "El estado de la reserva es requerido").notEmpty(),
+    body("date_start", "Start date is required").notEmpty().optional(), // Cambiado a opcional
+    body("date_end", "End date is required").notEmpty().optional(), // Cambiado a opcional
+    body("tp_status").isEmpty().withMessage("tp_status is not allowed"), // Validar que tp_status no sea proporcionado por el usuario
     validateRequestParams,
   ],
   putBooking,
@@ -52,9 +51,11 @@ router.post(
   "/",
   [
     validateJwt,
-    body("date_start", "La fecha de inicio es requerida").notEmpty(),
-    body("date_end", "La fecha de fin es requerida").notEmpty(),
-    body("tp_status", "El estado de la reserva es requerido").notEmpty(),
+    body("date_start", "Start date is required").notEmpty().isISO8601().toDate(),
+    body("date_end", "End date is required").notEmpty().isISO8601().toDate(),
+    body("tp_status").isEmpty().withMessage("tp_status is not allowed"),
+    body("room", "Room ID is required").optional().isMongoId(),
+    body("user", "User ID is required").optional().isMongoId(),
     validateRequestParams,
   ],
   bookingPost,
@@ -64,7 +65,7 @@ router.delete(
   "/:id",
   [
     validateJwt,
-    param("id", "No es un id válido").isMongoId(),
+    param("id", "Invalid ID").isMongoId(),
     validateRequestParams,
   ],
   bookingDelete,

@@ -23,6 +23,16 @@ const bookingSchema = new Schema({
     required: [true, "El estado del hotel es requerido"],
     enum: ["ACTIVE", "INACTIVE"],
   },
+  room: {
+    type: Schema.Types.ObjectId,
+    ref: 'Room',
+    required: [true, "El ID de la habitación es requerido"],
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, "El ID del usuario es requerido"],
+  },
 });
 
 const bookingModel = model("Booking", bookingSchema);
