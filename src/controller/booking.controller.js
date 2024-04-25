@@ -1,8 +1,8 @@
 import bookingModel from "../model/booking.model.js";
 import { response } from "express";
 
-export const bookingGet = async (req, res = response) => {
-  const { limit, desde } = req.query;
+export const bookingsGet = async (req, res = response) => {
+  const { limit, page } = req.query;
   const query = { tp_status: "ACTIVE" };
 
   const [total, bookings] = await Promise.all([
@@ -32,22 +32,17 @@ export const getBookingById = async (req, res) => {
 
 export const putBooking = async (req, res = response) => {
   const { id } = req.params;
-  const { date_start, date_end, tp_status } = req.body;
+  const { date_start, date_end } = req.body;
 
   const bookingToUpdate = {
     date_start,
     date_end,
-    tp_status,
-    updated_at: new Date(),
+    updated_at: new Date(), 
   };
 
-  const updatedBooking = await bookingModel.findByIdAndUpdate(
-    id,
-    bookingToUpdate,
-    {
-      new: true,
-    }
-  );
+  const updatedBooking = await bookingModel.findByIdAndUpdate(id, bookingToUpdate, {
+    new: true,
+  });
 
   if (!updatedBooking) {
     return res.status(404).json({
@@ -83,20 +78,21 @@ export const bookingDelete = async (req, res) => {
 };
 
 export const bookingPost = async (req, res) => {
-  const { date_start, date_end, tp_status, room_id, user_id } = req.body;
+  const { date_start, date_end, room_id, user_id } = req.body;
 
-  if (!date_start || !date_end || !tp_status || !room_id || !user_id) {
+  if (!Number.isInteger(room_id) || !Number.isInteger(user_id)) {
     return res.status(400).json({
-      msg: "Please provide all required fields,
+      msg: "Room ID and User ID must be integers",
     });
   }
 
+  const tp_status = "ACTIVE"; 
   const booking = new bookingModel({
     date_start,
     date_end,
-    tp_status,
     room_id,
     user_id,
+    tp_status,
   });
 
   try {
