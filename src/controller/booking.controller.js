@@ -4,12 +4,10 @@ import { response } from "express";
 export const bookingsGet = async (req, res = response) => {
   const { limit, page } = req.query;
   const query = { tp_status: "ACTIVE" };
-
   const [total, bookings] = await Promise.all([
     bookingModel.countDocuments(query),
-    bookingModel.find(query).skip(page * limit).limit(limit)
+    bookingModel.find(query).skip(Number(page) * Number(limit)).limit(Number(limit))
   ]);
-
   res.status(200).json({
     total,
     bookings,
@@ -80,12 +78,6 @@ export const bookingDelete = async (req, res) => {
 export const bookingPost = async (req, res) => {
   const { date_start, date_end, room_id, user_id } = req.body;
 
-  if (!Number.isInteger(room_id) || !Number.isInteger(user_id)) {
-    return res.status(400).json({
-      msg: "Room ID and User ID must be integers",
-    });
-  }
-
   const tp_status = "ACTIVE"; 
   const booking = new bookingModel({
     date_start,
@@ -107,3 +99,4 @@ export const bookingPost = async (req, res) => {
     });
   }
 };
+
