@@ -39,13 +39,28 @@ router.put(
   [
     validateJwt,
     param("id").isMongoId(),
-    body("date_start", "Start date is required").notEmpty().optional(), // Cambiado a opcional
-    body("date_end", "End date is required").notEmpty().optional(), // Cambiado a opcional
-    body("tp_status").isEmpty().withMessage("tp_status is not allowed"), // Validar que tp_status no sea proporcionado por el usuario
+    body("date_start", "If defined, start date must be defined as YYYY-MM-DD").optional().custom((date) => {
+      if (typeof date !== "string") throw new Error("Date must be a string");
+      if (date.split("-").length !== 3) throw new Error("Date not valid");
+      const [year, month, day] = date.split("-");
+      const isValidDate = Date.validate(year, month, day); 
+      if (!isValidDate) throw new Error("Date not valid");
+      return true;
+    }),
+    body("date_end", "If defined, end date must be defined as YYYY-MM-DD").optional().custom((date) => {
+      if (typeof date !== "string") throw new Error("Date must be a string");
+      if (date.split("-").length !== 3) throw new Error("Date not valid");
+      const [year, month, day] = date.split("-");
+      const isValidDate = Date.validate(year, month, day); 
+      if (!isValidDate) throw new Error("Date not valid");
+      return true;
+    }),
+    body("tp_status").isEmpty().withMessage("tp_status is not allowed"), 
     validateRequestParams,
   ],
   putBooking,
 );
+
 
 router.post(
   "/",
@@ -54,12 +69,13 @@ router.post(
     body("date_start", "Start date is required").notEmpty().isISO8601().toDate(),
     body("date_end", "End date is required").notEmpty().isISO8601().toDate(),
     body("tp_status").isEmpty().withMessage("tp_status is not allowed"),
-    body("room", "Room ID is required").optional().isMongoId(),
-    body("user", "User ID is required").optional().isMongoId(),
+    body("room", "Room ID is required").notEmpty().isMongoId(),
+    body("user", "User ID is required").notEmpty().isMongoId(), 
     validateRequestParams,
   ],
   bookingPost,
 );
+
 
 router.delete(
   "/:id",
