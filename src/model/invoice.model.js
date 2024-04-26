@@ -21,7 +21,7 @@ const invoiceSchema = new Schema({
     required: true,
   },
   booking_id: {
-    type: Number,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   user_id: {
