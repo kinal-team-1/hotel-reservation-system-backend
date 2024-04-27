@@ -84,7 +84,6 @@ export const bookingPost = async (req, res) => {
     date_end,
     room_id,
     user_id,
-    tp_status,
   });
 
   try {

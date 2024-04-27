@@ -39,26 +39,12 @@ router.put(
   [
     validateJwt,
     param("id").isMongoId(),
-    body("date_start", "If defined, start date must be defined as YYYY-MM-DD").optional().custom((date) => {
-      if (typeof date !== "string") throw new Error("Date must be a string");
-      if (date.split("-").length !== 3) throw new Error("Date not valid");
-      const [year, month, day] = date.split("-");
-      const isValidDate = Date.validate(year, month, day); 
-      if (!isValidDate) throw new Error("Date not valid");
-      return true;
-    }),
-    body("date_end", "If defined, end date must be defined as YYYY-MM-DD").optional().custom((date) => {
-      if (typeof date !== "string") throw new Error("Date must be a string");
-      if (date.split("-").length !== 3) throw new Error("Date not valid");
-      const [year, month, day] = date.split("-");
-      const isValidDate = Date.validate(year, month, day); 
-      if (!isValidDate) throw new Error("Date not valid");
-      return true;
-    }),
+    body("date_start", "If defined, start date must be defined as YYYY-MM-DD").optional().isISO8601(),
+    body("date_end", "If defined, end date must be defined as YYYY-MM-DD").optional().isISO8601(),
     body("tp_status").isEmpty().withMessage("tp_status is not allowed"), 
     validateRequestParams,
   ],
-  putBooking,
+  putBooking
 );
 
 
@@ -66,14 +52,14 @@ router.post(
   "/",
   [
     validateJwt,
-    body("date_start", "Start date is required").notEmpty().isISO8601().toDate(),
-    body("date_end", "End date is required").notEmpty().isISO8601().toDate(),
+    body("date_start", "Start date is required").notEmpty().isISO8601(),
+    body("date_end", "End date is required").notEmpty().isISO8601(),
     body("tp_status").isEmpty().withMessage("tp_status is not allowed"),
     body("room", "Room ID is required").notEmpty().isMongoId(),
     body("user", "User ID is required").notEmpty().isMongoId(), 
     validateRequestParams,
   ],
-  bookingPost,
+  bookingPost
 );
 
 
