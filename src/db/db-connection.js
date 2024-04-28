@@ -15,7 +15,7 @@ export const dbConnection = async () => {
       console.log("MongoDB | connected to mongoDB");
     });
     mongoose.connection.on("open", () => {
-      console.log("MongoDB | connected to dabase");
+      console.log("MongoDB | connected to database");
     });
     mongoose.connection.on("reconnected", () => {
       console.log("MongoDB | reconnected to MongoDB");
@@ -26,7 +26,7 @@ export const dbConnection = async () => {
 
     await mongoose.connect(process.env.MONGO_URL, {
       serverSelectionTimeoutMS: 5000,
-      maxPoolSize: 50
+      maxPoolSize: 50,
     });
   } catch (e) {
     console.log("Database connection failed", e);
