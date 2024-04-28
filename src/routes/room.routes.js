@@ -41,20 +41,23 @@ router.put(
     param("id").isMongoId(),
     body(
       "description",
-      "If description is provided, it must have at least 4 characters"
+      "If `description` is provided, it must have at least 4 characters"
     )
       .optional()
       .isLength({ min: 4 }),
     body(
       "people_capacity",
-      "If people_capacity is provided, it must be a valid number"
+      "If `people_capacity` is provided, it must be a valid number"
     )
       .optional()
       .isInt(),
-    body("night_price", "If night_price is provided, it must be a valid number")
+    body(
+      "night_price",
+      "If `night_price` is provided, it must be a valid number"
+    )
       .optional()
       .isNumeric(),
-    body("room_type", "If room_type is provided, it must be a valid string")
+    body("room_type", "If `room_type` is provided, it must be a valid string")
       .optional()
       .notEmpty(),
     validateRequestParams
@@ -69,17 +72,17 @@ router.post(
     isAdminLogged,
     body(
       "description",
-      "`description` is required and must have at least 4 characters"
+      "The field `description` is required and must have at least 4 characters"
     ).isLength({ min: 4 }),
     body(
       "people_capacity",
-      "`people_capacity` is required and must be an Int"
+      "The field `people_capacity` is required and must be an Int"
     ).isInt(),
     body(
       "night_price",
-      "`night_price` is required and must be a number"
+      "The field `night_price` is required and must be a number"
     ).isNumeric(),
-    body("room_type", "`room_type` is required").notEmpty(),
+    body("room_type", "The field `room_type` is required").notEmpty(),
     validateRequestParams
   ],
   roomPost

@@ -1,10 +1,10 @@
-import hotelImage from "../model/hotelImg.model.js";
+import HotelImg from "../model/hotelImg.model.js";
 import { response } from "express";
 
 export const hotelImagesGet = async (req, res = response) => {
   try {
     const { hotel_id } = req.query;
-    const images = await hotelImage.find({ hotel_id });
+    const images = await HotelImg.find({ hotel_id });
     res.status(200).json({ images });
   } catch (error) {
     console.error("Error al obtener las imágenes del hotel:", error);
@@ -15,7 +15,7 @@ export const hotelImagesGet = async (req, res = response) => {
 export const getHotelImageById = async (req, res = response) => {
   try {
     const { id } = req.params;
-    const image = await hotelImage.findById(id);
+    const image = await HotelImg.findById(id);
     if (!image) {
       return res.status(404).json({ message: "Imagen no encontrada" });
     }
@@ -29,7 +29,7 @@ export const getHotelImageById = async (req, res = response) => {
 export const hotelImagePost = async (req, res) => {
   try {
     const { image_url, hotel_id, is_main_image } = req.body;
-    const image = new hotelImage({ image_url, hotel_id, is_main_image });
+    const image = new HotelImg({ image_url, hotel_id, is_main_image });
     await image.save();
     res.status(201).json({ image });
   } catch (error) {
@@ -42,7 +42,7 @@ export const putHotelImage = async (req, res) => {
   try {
     const { id } = req.params;
     const { image_url, hotel_id, is_main_image } = req.body;
-    const updatedImage = await hotelImage.findByIdAndUpdate(
+    const updatedImage = await HotelImg.findByIdAndUpdate(
       id,
       { image_url, hotel_id, is_main_image },
       { new: true }
@@ -60,7 +60,7 @@ export const putHotelImage = async (req, res) => {
 export const hotelImageDelete = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedImage = await hotelImage.findByIdAndDelete(id);
+    const deletedImage = await HotelImg.findByIdAndDelete(id);
     if (!deletedImage) {
       return res.status(404).json({ message: "Imagen no encontrada" });
     }

@@ -1,4 +1,4 @@
-import hotelModel from "../model/hoteles.model.js";
+import HotelModel from "../model/hoteles.model.js";
 import { response } from "express";
 
 export const hotelsGet = async (req, res = response) => {
@@ -6,8 +6,8 @@ export const hotelsGet = async (req, res = response) => {
   const query = { tp_status: "ACTIVE" };
 
   const [total, hotels] = await Promise.all([
-    hotelModel.countDocuments(query),
-    hotelModel.find(query).skip(Number(page)).limit(Number(limit))
+    HotelModel.countDocuments(query),
+    HotelModel.find(query).skip(Number(page)).limit(Number(limit))
   ]);
 
   res.status(200).json({
@@ -18,7 +18,7 @@ export const hotelsGet = async (req, res = response) => {
 
 export const getHotelById = async (req, res) => {
   const { id } = req.params;
-  const hotel = await hotelModel.findById({ _id: id });
+  const hotel = await HotelModel.findById({ _id: id });
   if (!hotel) {
     return res.status(404).json({
       msg: "Room not found"
@@ -42,7 +42,7 @@ export const putHotel = async (req, res = response) => {
     updated_at: new Date()
   };
 
-  const updatedHotel = await hotelModel.findByIdAndUpdate(id, hotelToUpdate, {
+  const updatedHotel = await HotelModel.findByIdAndUpdate(id, hotelToUpdate, {
     new: true
   });
 
@@ -61,7 +61,7 @@ export const putHotel = async (req, res = response) => {
 export const hotelDelete = async (req, res) => {
   const { id } = req.params;
 
-  const hotel = await hotelModel.findByIdAndUpdate(
+  const hotel = await HotelModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
     { new: true }
@@ -81,7 +81,7 @@ export const hotelDelete = async (req, res) => {
 
 export const hotelPost = async (req, res) => {
   const { name, country, address, description } = req.body;
-  const hotel = new hotelModel({
+  const hotel = new HotelModel({
     name,
     country,
     address,

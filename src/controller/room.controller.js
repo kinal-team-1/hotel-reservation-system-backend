@@ -1,4 +1,4 @@
-import roomModel from "../model/room.model.js";
+import RoomModel from "../model/room.model.js";
 import { response } from "express";
 
 export const roomsGet = async (req, res = response) => {
@@ -6,9 +6,8 @@ export const roomsGet = async (req, res = response) => {
   const query = { tp_status: "ACTIVE" };
 
   const [total, rooms] = await Promise.all([
-    roomModel.countDocuments(query),
-    roomModel
-      .find(query)
+    RoomModel.countDocuments(query),
+    RoomModel.find(query)
       .skip(Number(page) * Number(limit))
       .limit(Number(limit))
   ]);
@@ -21,7 +20,7 @@ export const roomsGet = async (req, res = response) => {
 
 export const getRoomById = async (req, res) => {
   const { id } = req.params;
-  const room = await roomModel.findById({ _id: id });
+  const room = await RoomModel.findById({ _id: id });
   if (!room) {
     return res.status(404).json({
       msg: "Room not found"
@@ -45,7 +44,7 @@ export const putRoom = async (req, res = response) => {
     updated_at: new Date()
   };
 
-  const updatedRoom = await roomModel.findByIdAndUpdate(id, roomToUpdate, {
+  const updatedRoom = await RoomModel.findByIdAndUpdate(id, roomToUpdate, {
     new: true
   });
 
@@ -64,7 +63,7 @@ export const putRoom = async (req, res = response) => {
 export const roomDelete = async (req, res) => {
   const { id } = req.params;
 
-  const room = await roomModel.findByIdAndUpdate(
+  const room = await RoomModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
     { new: true }
@@ -84,7 +83,7 @@ export const roomDelete = async (req, res) => {
 
 export const roomPost = async (req, res) => {
   const { description, people_capacity, night_price, room_type } = req.body;
-  const room = new roomModel({
+  const room = new RoomModel({
     description,
     people_capacity,
     night_price,
