@@ -20,11 +20,11 @@ router.get(
     query("limite")
       .optional()
       .isNumeric()
-      .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
+      .withMessage("The limit must be a numerical value"),
+    query("page")
       .optional()
       .isNumeric()
-      .withMessage("El valor desde debe ser numérico"),
+      .withMessage("The value from must be numeric"),
     validateRequestParams,
   ],
   reviewsGet
@@ -42,42 +42,45 @@ router.put(
     validateJwt,
     isAdminLogged,
     param("id").isMongoId(),
-    body("comment", "El comentario no puede estar vacío").notEmpty(),
-    body("rating_cleanliness", "La calificación de limpieza es requerida").isNumeric(),
-    body("rating_staff", "La calificación del personal es requerida").isNumeric(),
-    body("rating_facilities", "La calificación de las instalaciones es requerida").isNumeric(),
-    body("tp_status", "El estado es requerido").notEmpty().isIn(["ACTIVE", "INACTIVE"]),
-    body("is_custom", "Se requiere indicar si es personalizado").isBoolean(),
-    body("user_id", "El ID de usuario es requerido").notEmpty(),
-    body("hotel_id", "El ID del hotel es requerido").notEmpty(),
+    body("comment").optional().notEmpty().withMessage("Comment cannot be empty"),
+    body("rating_cleanliness").optional().isNumeric().withMessage("Cleanliness rating is required"),
+    body("rating_staff").optional().isNumeric().withMessage("Staff rating is required"),
+    body("rating_facilities").optional().isNumeric().withMessage("Facilities rating is required"),
+    body("tp_status").optional().isIn(["ACTIVE", "INACTIVE"]).withMessage("Status is required"),
+    body("is_customer").optional().isBoolean().withMessage("Specify whether it is custom"),
+    body("user_id").optional().notEmpty().withMessage("User ID is required"),
+    body("hotel_id").optional().notEmpty().withMessage("Hotel ID is required"),
+    
     validateRequestParams,
   ],
   putReview
 );
 
+
 router.post(
   "/",
   [
     validateJwt,
-    body("comment", "El comentario es requerido").notEmpty(),
-    body("rating_cleanliness", "La calificación de limpieza es requerida").isNumeric(),
-    body("rating_staff", "La calificación del personal es requerida").isNumeric(),
-    body("rating_facilities", "La calificación de las instalaciones es requerida").isNumeric(),
-    body("tp_status", "El estado es requerido").notEmpty().isIn(["ACTIVE", "INACTIVE"]),
-    body("is_custom", "Se requiere indicar si es personalizado").isBoolean(),
-    body("user_id", "El ID de usuario es requerido").notEmpty(),
-    body("hotel_id", "El ID del hotel es requerido").notEmpty(),
+    body("comment", "Comment is required").notEmpty(),
+    body("rating_cleanliness", "Rating cleanliness must be a number").isNumeric(),
+    body("rating_staff", "Rating staff must be a number").isNumeric(),
+    body("rating_facilities", "Rating facilities must be a number").isNumeric(),
+    body("tp_status", "Status is required").notEmpty().isIn(["ACTIVE", "INACTIVE"]),
+    body("is_custom", "Indicate whether it's custom or not").isBoolean(),
+    body("user_id", "User ID is required").notEmpty().isMongoId(),
+    body("hotel_id", "Hotel ID is required").notEmpty().isMongoId(),
     validateRequestParams,
   ],
   reviewPost
 );
+
 
 router.delete(
   "/:id",
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
+    param("id", "It is not a valid id").isMongoId(),
     validateRequestParams,
   ],
   reviewDelete

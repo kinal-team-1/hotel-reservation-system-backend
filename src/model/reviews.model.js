@@ -3,36 +3,37 @@ import { Schema, model } from "mongoose";
 const reviewSchema = new Schema({
   comment: {
     type: String,
-    required: [true, "El comentario es requerido"],
+    required: [true, "Comment is required"],
   },
   rating_cleanliness: {
-    type: int,
-    required: [true, "La calificación de limpieza es requerida"],
+    type: Number,
+    required: [true, "Cleanliness rating is required"],
   },
   rating_staff: {
-    type: int,
-    required: [true, "La calificación del personal es requerida"],
+    type: Number,
+    required: [true, "Staff rating is required"],
   },
   rating_facilities: {
-    type: int,
-    required: [true, "La calificación de las instalaciones es requerida"],
+    type: Number,
+    required: [true, "Facilities rating is required"],
   },
   tp_status: {
     type: String,
-    required: [true, "El estado es requerido"],
+    required: [true, "Status is required"],
     enum: ["ACTIVE", "INACTIVE"],
+    default: "ACTIVE"
   },
-  is_custom: {
+  is_customer: {
     type: Boolean,
-    required: [true, "Se requiere indicar si es personalizado"],
+    required: [true, "Specify whether it was a customer"],
   },
   user_id: {
     type: String,
-    required: [true, "El ID de usuario es requerido"],
+    required: [true, "User ID is required"],
   },
   hotel_id: {
     type: String,
-    required: [true, "El ID del hotel es requerido"],
+    required: [true, "Hotel ID is required"],
   }
 });
 

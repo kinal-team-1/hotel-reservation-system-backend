@@ -20,11 +20,11 @@ router.get(
     query("limite")
       .optional()
       .isNumeric()
-      .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
+      .withMessage("The limit must be a numerical value"),
+    query("page")
       .optional()
       .isNumeric()
-      .withMessage("El valor desde debe ser numérico"),
+      .withMessage("The value from must be numeric"),
     validateRequestParams,
   ],
   favoritesGet
@@ -36,23 +36,13 @@ router.get(
   getFavoriteById
 );
 
-router.put(
-  "/:id",
-  [
-    validateJwt,
-    isAdminLogged,
-    param("id").isMongoId(),
-    validateRequestParams,
-  ],
-  putFavorite
-);
-
 router.post(
   "/",
   [
     validateJwt,
-    param("user_id").notEmpty().withMessage("El ID de usuario es requerido"),
-    param("hotel_id").notEmpty().withMessage("El ID del hotel es requerido"),
+    param("id").isMongoId(),
+    param("user_id", "User ID is required").notEmpty().isMongoId(),
+    param("hotel_id", "Hotel ID is required").notEmpty().isMongoId(),
     validateRequestParams,
   ],
   favoritePost
@@ -63,7 +53,7 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
+    param("id", "It is not a valid id").isMongoId(),
     validateRequestParams,
   ],
   favoriteDelete

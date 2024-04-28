@@ -1,16 +1,17 @@
-import { Schema, model } from "mongoose";
-
 const favoriteHotelSchema = new Schema({
-  user_id: {
-    ref:"User",
-    required: [true, "El ID de usuario es requerido"],
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "User ID is required"],
   },
-  hotel_id: {
-    ref:"Hotel",
-    required: [true, "El ID del hotel es requerido"],
+  hotel: {
+    type: Schema.Types.ObjectId,
+    ref: "Hotel",
+    required: [true, "Hotel ID is required"],
   },
 });
 
-const favUserHotel = model("favoriteUserHotel", favoriteHotelSchema);
 
-export default favUserHotel;
+favoriteHotelSchema.index({ user: 1, hotel: 1 }, { unique: true });
+
+const FavoriteHotel = mongoose.model('FavoriteHotel', favoriteHotelSchema);

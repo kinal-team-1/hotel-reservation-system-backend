@@ -2,12 +2,13 @@ import Review from "../model/review.model.js";
 import { response } from "express";
 
 export const reviewsGet = async (req, res = response) => {
-  const { limite, desde } = req.query;
-  const query = {};
-
+  const { limite, page } = req.query;
+  const query = { tp_status: "ACTIVE" }
   const [total, reviews] = await Promise.all([
     Review.countDocuments(query),
-    Review.find(query).skip(Number(desde)).limit(Number(limite)),
+    Review.find(query)
+      .skip(Number(page) * Number(limit))
+      .limit(Number(limite)),
   ]);
 
   res.status(200).json({
@@ -21,7 +22,7 @@ export const getReviewById = async (req, res) => {
   const review = await Review.findById(id);
   if (!review) {
     return res.status(404).json({
-      msg: "Revisión no encontrada",
+      msg: "Revision not found",
     });
   }
 
@@ -31,16 +32,14 @@ export const getReviewById = async (req, res) => {
 };
 
 export const putReview = async (req, res = response) => {
-  const { id } = req.params;
   const {
     comment,
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    tp_status,
-    is_custom,
     user_id,
     hotel_id,
+    is_customer,
   } = req.body;
 
   const reviewToUpdate = {
@@ -48,10 +47,9 @@ export const putReview = async (req, res = response) => {
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    tp_status,
-    is_custom,
     user_id,
     hotel_id,
+    is_customer,
     updated_at: new Date(),
   };
 
@@ -61,29 +59,31 @@ export const putReview = async (req, res = response) => {
 
   if (!updatedReview) {
     return res.status(404).json({
-      msg: "Revisión no encontrada",
+      msg: "Revisión not found",
     });
   }
 
   res.status(200).json({
-    msg: "Revisión actualizada exitosamente",
+    msg: "Review successfully updated",
     review: updatedReview,
   });
 };
 
-export const reviewDelete = async (req, res) => {
+export const reviewUpdateStatus = async (req, res) => {
   const { id } = req.params;
-
-  const review = await Review.findByIdAndDelete(id);
-
+  const review = await Review.findByIdAndUpdate(
+    id,
+    { tp_status: "INACTIVE" },
+    { new: true }
+  );
   if (!review) {
     return res.status(404).json({
-      msg: "Revisión no encontrada",
+      msg: "Review not found",
     });
   }
 
   res.status(200).json({
-    msg: "Revisión eliminada exitosamente",
+    msg: "Review status successfully updated",
     review,
   });
 };
@@ -94,21 +94,20 @@ export const reviewPost = async (req, res) => {
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    tp_status,
-    is_custom,
     user_id,
     hotel_id,
+    is_customer,
   } = req.body;
+
 
   const review = new Review({
     comment,
     rating_cleanliness,
     rating_staff,
-    rating_facilities,
-    tp_status,
-    is_custom,
+    rating_facilities, 
     user_id,
     hotel_id,
+    is_customer,
   });
 
   await review.save();
