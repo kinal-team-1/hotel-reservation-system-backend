@@ -50,6 +50,12 @@ export const putReview = async (req, res = response) => {
     updated_at: new Date(),
   };
 
+  Object.keys(reviewToUpdate).forEach((key) => {
+    if (reviewToUpdate[key] === undefined) {
+      delete reviewToUpdate[key];
+    }
+  });
+
   const updatedReview = await Review.findByIdAndUpdate(id, reviewToUpdate, {
     new: true,
   });
@@ -63,25 +69,6 @@ export const putReview = async (req, res = response) => {
   res.status(200).json({
     msg: "Review successfully updated",
     review: updatedReview,
-  });
-};
-
-export const reviewUpdateStatus = async (req, res) => {
-  const { id } = req.params;
-  const review = await Review.findByIdAndUpdate(
-    id,
-    { tp_status: "INACTIVE" },
-    { new: true },
-  );
-  if (!review) {
-    return res.status(404).json({
-      msg: "Review not found",
-    });
-  }
-
-  res.status(200).json({
-    msg: "Review status successfully updated",
-    review,
   });
 };
 
@@ -109,5 +96,23 @@ export const reviewPost = async (req, res) => {
   await review.save();
   res.status(201).json({
     review,
+  });
+};
+
+export const reviewDelete = async (req, res) => {
+  const { id } = req.params;
+  const review = await Review.findByIdAndUpdate(
+    id,
+    { tp_status: "INACTIVE" },
+    { new: true },
+  );
+  if (!review) {
+    return res.status(404).json({
+      msg: "Review not found",
+    });
+  }
+
+  res.status(200).json({
+    msg: "Review successfully deleted",
   });
 };

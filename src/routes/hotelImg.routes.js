@@ -9,6 +9,7 @@ import {
   hotelImagesGet,
   getHotelImageById,
   hotelImageDelete,
+  changeMainImage,
 } from "../controller/hotelImg.controller.js";
 
 const router = Router();
@@ -43,18 +44,14 @@ router.put(
     validateJwt,
     isAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    body("image_url")
-      .optional()
-      .not()
-      .isEmpty()
-      .withMessage("La URL de la imagen no puede estar vacía"),
     body("is_main_image")
-      .optional()
       .isBoolean()
-      .withMessage("El campo is_main_image debe ser un booleano"),
+      .withMessage(
+        "The field `is_main_image` is required and must be a boolean",
+      ),
     validateRequestParams,
   ],
-  putHotelImage,
+  changeMainImage,
 );
 
 router.post(

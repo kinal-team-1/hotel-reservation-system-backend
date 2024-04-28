@@ -10,13 +10,13 @@ export const getAllUsers = async (req, res) => {
     UserModel.find(query)
       .select("name lastname email role")
       .limit(parseInt(Number(limit)))
-      .skip(parseInt(Number(page)) * parseInt(Number(limit)))
+      .skip(parseInt(Number(page)) * parseInt(Number(limit))),
   ]);
 
   res.status(200).json({
     total: total.value,
     page,
-    users: users.value
+    users: users.value,
   });
 };
 
@@ -29,7 +29,7 @@ export const createUser = async (req, res) => {
     lastname,
     email,
     password: encryptedPassword,
-    role
+    role,
   });
   await user.save();
 
@@ -39,7 +39,7 @@ export const createUser = async (req, res) => {
 export const getUserById = async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findOne({ _id: id, tp_status: "ACTIVE" }).select(
-    "name lastname email role"
+    "name lastname email role",
   );
 
   if (!user) {
@@ -65,25 +65,24 @@ export const updateUserById = async (req, res) => {
     userUpdated.password = bcryptjs.hashSync(userUpdated.password, salt);
   }
 
-  const user = await UserModel.findOneAndUpdate(
-    { _id: id, tp_status: "ACTIVE" },
-    userUpdated
-  ).select("name lastname email role password");
+  const user = await UserModel.findOneAndUpdate({ _id: id }, userUpdated, {
+    new: true,
+  }).select("name lastname email role password");
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
 
   res.status(200).json({
-    user: { ...user._doc, ...userUpdated }
+    user,
   });
 };
 
 export const deleteUserById = async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findOneAndUpdate(
-    { _id: id, tp_status: "ACTIVE" },
-    { tp_status: "INACTIVE" }
+    { _id: id },
+    { tp_status: "INACTIVE" },
   ).select("name lastname email role");
 
   if (!user) {

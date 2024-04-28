@@ -6,7 +6,6 @@ import { validateRequestParams } from "../middleware/validate-request-params.js"
 
 import {
   favoritesGet,
-  getFavoriteById,
   favoriteDelete,
   favoritePost,
 } from "../controller/favoriteHotel.controller.js";
@@ -16,7 +15,7 @@ const router = Router();
 router.get(
   "/",
   [
-    query("limite")
+    query("limit")
       .optional()
       .isNumeric()
       .withMessage("The limit must be a numerical value"),
@@ -27,12 +26,6 @@ router.get(
     validateRequestParams,
   ],
   favoritesGet,
-);
-
-router.get(
-  "/:id",
-  [param("id").isMongoId(), validateRequestParams],
-  getFavoriteById,
 );
 
 router.post(

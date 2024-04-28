@@ -45,27 +45,29 @@ router.put(
     body("comment")
       .optional()
       .notEmpty()
-      .withMessage("Comment cannot be empty"),
+      .withMessage(
+        "If field `comment` is provided, it must be a non-empty string",
+      ),
     body("rating_cleanliness")
       .optional()
-      .isNumeric()
-      .withMessage("Cleanliness rating is required"),
+      .isInt()
+      .withMessage(
+        "If field `rating_cleanliness` is provided, it must be an int",
+      ),
     body("rating_staff")
       .optional()
-      .isNumeric()
-      .withMessage("Staff rating is required"),
+      .isInt()
+      .withMessage("If field `rating_staff` is provided, it must be an int"),
     body("rating_facilities")
       .optional()
-      .isNumeric()
-      .withMessage("Facilities rating is required"),
-    body("tp_status")
-      .optional()
-      .isIn(["ACTIVE", "INACTIVE"])
-      .withMessage("Status is required"),
+      .isInt()
+      .withMessage(
+        "If field `rating_facilities` is provided, it must be an int",
+      ),
     body("is_customer")
       .optional()
       .isBoolean()
-      .withMessage("Specify whether it is custom"),
+      .withMessage("If `is_customer` provided, it must be a boolean value"),
     body("user_id").optional().notEmpty().withMessage("User ID is required"),
     body("hotel_id").optional().notEmpty().withMessage("Hotel ID is required"),
 
@@ -81,16 +83,27 @@ router.post(
     body("comment", "Comment is required").notEmpty(),
     body(
       "rating_cleanliness",
-      "Rating cleanliness must be a number",
-    ).isNumeric(),
-    body("rating_staff", "Rating staff must be a number").isNumeric(),
-    body("rating_facilities", "Rating facilities must be a number").isNumeric(),
-    body("tp_status", "Status is required")
+      "The field `rating_cleanliness` is required and must be an int",
+    ).isInt(),
+    body(
+      "rating_staff",
+      "The field `rating_staff` is required and must be an int",
+    ).isInt(),
+    body(
+      "rating_facilities",
+      "The field `rating_facilities` is required and must be an int",
+    ).isInt(),
+    // The field `field` is required and must be <TYPE>
+    body(
+      "is_customer",
+      "The field `is_customer` is required and must be a boolean",
+    ).isBoolean(),
+    body("user_id", "The field `user_id` is required and must be a MongoID")
       .notEmpty()
-      .isIn(["ACTIVE", "INACTIVE"]),
-    body("is_custom", "Indicate whether it's custom or not").isBoolean(),
-    body("user_id", "User ID is required").notEmpty().isMongoId(),
-    body("hotel_id", "Hotel ID is required").notEmpty().isMongoId(),
+      .isMongoId(),
+    body("hotel_id", "The field `hotel_id` is required and must be a MongoID")
+      .notEmpty()
+      .isMongoId(),
     validateRequestParams,
   ],
   reviewPost,
@@ -101,7 +114,7 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "It is not a valid id").isMongoId(),
+    param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
   reviewDelete,

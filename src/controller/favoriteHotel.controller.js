@@ -1,4 +1,4 @@
-import FavoriteHotel from "../model/favoriteHotel.model.js"; // Cambio de nombre de la importación
+import FavoriteHotel from "../model/favoriteHoteles.model.js"; // Cambio de nombre de la importación
 import { response } from "express";
 
 export const favoritesGet = async (req, res = response) => {
@@ -13,20 +13,6 @@ export const favoritesGet = async (req, res = response) => {
   res.status(200).json({
     total,
     favorites,
-  });
-};
-
-export const getFavoriteById = async (req, res) => {
-  const { id } = req.params;
-  const favorite = await FavoriteHotel.findById(id); // Cambio de nombre de la variable
-  if (!favorite) {
-    return res.status(404).json({
-      msg: "Favorite not found",
-    });
-  }
-
-  res.status(200).json({
-    favorite,
   });
 };
 
@@ -51,7 +37,6 @@ export const favoritePost = async (req, res) => {
   const { user_id, hotel_id } = req.body;
 
   const favorite = new FavoriteHotel({
-    // Cambio de nombre de la variable
     user_id,
     hotel_id,
   });

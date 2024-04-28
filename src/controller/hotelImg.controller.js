@@ -38,22 +38,28 @@ export const hotelImagePost = async (req, res) => {
   }
 };
 
-export const putHotelImage = async (req, res) => {
+export const changeMainImage = async (req, res) => {
   try {
     const { id } = req.params;
-    const { image_url, hotel_id, is_main_image } = req.body;
+    const { is_main_image, hotel_id } = req.body;
+
+    await HotelImg.findOneAndUpdate(
+      { hotel_id, is_main_image: true },
+      { is_main_image: false },
+    );
+
     const updatedImage = await HotelImg.findByIdAndUpdate(
       id,
-      { image_url, hotel_id, is_main_image },
-      { new: true }
+      { is_main_image },
+      { new: true },
     );
     if (!updatedImage) {
-      return res.status(404).json({ message: "Imagen no encontrada" });
+      return res.status(404).json({ message: "Image not found" });
     }
     res.status(200).json({ updatedImage });
   } catch (error) {
     console.error("Error al actualizar la imagen:", error);
-    res.status(500).json({ message: "Error interno del servidor" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
