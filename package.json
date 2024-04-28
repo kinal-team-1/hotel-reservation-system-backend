@@ -7,10 +7,10 @@
   "scripts": {
     "preinstall": "node -e \"const fs = require('fs'); if (fs.existsSync('.git')) { require('child_process').execSync('git config core.hooksPath hooks'); }\"",
     "format": "prettier-eslint --write \"**/*.{js,cjs,jsx,ts,tsx,json,css,scss}\"",
-    "lint": "eslint .",
+    "lint": "eslint . ",
     "check": "npm run lint & node check-build.js",
     "lint-compact": "eslint --fix --format unix",
-    "dev": "nodemon server.js",
+    "dev": "npm run check && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

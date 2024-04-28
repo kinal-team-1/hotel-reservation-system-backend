@@ -1,4 +1,4 @@
-import RoomImage from "../model/roomImg.model";
+import RoomImage from "../model/roomImg.model.js";
 import { response } from "express";
 
 export const roomImagesGet = async (req, res = response) => {

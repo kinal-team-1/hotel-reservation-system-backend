@@ -47,9 +47,9 @@ const walkDirectory = async (dir) => {
     const jsFiles = await walkDirectory(srcPath);
     const promises = jsFiles.map(runNodeProcess);
     await Promise.all(promises);
-    console.log("Build successful");
+    console.log("check successful");
   } catch (err) {
-    console.error("Build failed:", err);
+    console.error("check failed:", err);
     process.exit(1);
   }
 })();

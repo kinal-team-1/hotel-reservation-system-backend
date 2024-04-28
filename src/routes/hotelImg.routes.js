@@ -4,7 +4,6 @@ import { validateJwt } from "../middleware/validate-jwt.js";
 import { isAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
-  putHotelImage,
   hotelImagePost,
   hotelImagesGet,
   getHotelImageById,
