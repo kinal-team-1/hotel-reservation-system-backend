@@ -2,13 +2,13 @@ import Review from "../model/review.model.js";
 import { response } from "express";
 
 export const reviewsGet = async (req, res = response) => {
-  const { limite, page } = req.query;
-  const query = { tp_status: "ACTIVE" }
+  const { limit, page } = req.query;
+  const query = { tp_status: "ACTIVE" };
   const [total, reviews] = await Promise.all([
     Review.countDocuments(query),
     Review.find(query)
       .skip(Number(page) * Number(limit))
-      .limit(Number(limite)),
+      .limit(Number(limit)),
   ]);
 
   res.status(200).json({
@@ -32,13 +32,12 @@ export const getReviewById = async (req, res) => {
 };
 
 export const putReview = async (req, res = response) => {
+  const { id } = req.params; // Extraemos el id de los parámetros de la solicitud
   const {
     comment,
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    user_id,
-    hotel_id,
     is_customer,
   } = req.body;
 
@@ -47,8 +46,6 @@ export const putReview = async (req, res = response) => {
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    user_id,
-    hotel_id,
     is_customer,
     updated_at: new Date(),
   };
@@ -74,7 +71,7 @@ export const reviewUpdateStatus = async (req, res) => {
   const review = await Review.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
-    { new: true }
+    { new: true },
   );
   if (!review) {
     return res.status(404).json({
@@ -99,12 +96,11 @@ export const reviewPost = async (req, res) => {
     is_customer,
   } = req.body;
 
-
   const review = new Review({
     comment,
     rating_cleanliness,
     rating_staff,
-    rating_facilities, 
+    rating_facilities,
     user_id,
     hotel_id,
     is_customer,
