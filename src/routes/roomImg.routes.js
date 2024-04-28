@@ -6,7 +6,7 @@ import { validateRequestParams } from "../middleware/validate-request-params.js"
 import {
   roomImagePost,
   roomImagesGet,
-  roomImageDelete,
+  roomImageDelete
 } from "../controller/roomImg.controller.js";
 
 const router = Router();
@@ -19,9 +19,9 @@ router.get(
     query("room_id", "if `room_id` is defined, it must be a valid MongoId")
       .optional()
       .isMongoId(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  roomImagesGet,
+  roomImagesGet
 );
 
 router.post(
@@ -31,21 +31,21 @@ router.post(
     isAdminLogged,
     body(
       "image_url",
-      "The field `image_url` is required and must be a valid URL",
+      "The field `image_url` is required and must be a valid URL"
     )
       .not()
       .isEmpty(),
     body(
       "room_id",
-      "The field `room_id` is required and must be a valid MongoId",
+      "The field `room_id` is required and must be a valid MongoId"
     ).isMongoId(),
     body(
       "is_main_image",
-      "The field `is_main_image` is required and must be a boolean",
+      "The field `is_main_image` is required and must be a boolean"
     ).isBoolean(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  roomImagePost,
+  roomImagePost
 );
 
 router.delete(
@@ -53,10 +53,10 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    validateRequestParams,
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams
   ],
-  roomImageDelete,
+  roomImageDelete
 );
 
 export default router;

@@ -7,12 +7,12 @@ export const hotelsGet = async (req, res = response) => {
 
   const [total, hotels] = await Promise.all([
     hotelModel.countDocuments(query),
-    hotelModel.find(query).skip(Number(page)).limit(Number(limit)),
+    hotelModel.find(query).skip(Number(page)).limit(Number(limit))
   ]);
 
   res.status(200).json({
     total,
-    hotels,
+    hotels
   });
 };
 
@@ -21,12 +21,12 @@ export const getHotelById = async (req, res) => {
   const hotel = await hotelModel.findById({ _id: id });
   if (!hotel) {
     return res.status(404).json({
-      msg: "Room not found",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
-    hotel,
+    hotel
   });
 };
 
@@ -39,22 +39,22 @@ export const putHotel = async (req, res = response) => {
     country,
     address,
     description,
-    updated_at: new Date(),
+    updated_at: new Date()
   };
 
   const updatedHotel = await hotelModel.findByIdAndUpdate(id, hotelToUpdate, {
-    new: true,
+    new: true
   });
 
   if (!updatedHotel) {
     return res.status(404).json({
-      msg: "Room not found",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
     msg: "Room updated successfully",
-    hotel: updatedHotel,
+    hotel: updatedHotel
   });
 };
 
@@ -64,18 +64,18 @@ export const hotelDelete = async (req, res) => {
   const hotel = await hotelModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
-    { new: true },
+    { new: true }
   );
 
   if (!hotel) {
     return res.status(404).json({
-      msg: "Hotel no encontrado",
+      msg: "Hotel no encontrado"
     });
   }
 
   res.status(200).json({
     msg: "Hotel eliminado exitosamente",
-    hotel,
+    hotel
   });
 };
 
@@ -86,11 +86,11 @@ export const hotelPost = async (req, res) => {
     country,
     address,
     description,
-    tp_status: "ACTIVE",
+    tp_status: "ACTIVE"
   });
 
   await hotel.save();
   res.status(201).json({
-    hotel,
+    hotel
   });
 };

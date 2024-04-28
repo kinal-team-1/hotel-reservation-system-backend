@@ -8,7 +8,7 @@ import {
   hotelImagePost,
   hotelImagesGet,
   getHotelImageById,
-  hotelImageDelete,
+  hotelImageDelete
 } from "../controller/hotelImg.controller.js";
 
 const router = Router();
@@ -21,9 +21,9 @@ router.get(
     query("hotel_id", "El hotel_id no es un ObjectId válido")
       .optional()
       .isMongoId(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  hotelImagesGet,
+  hotelImagesGet
 );
 
 router.get(
@@ -31,11 +31,10 @@ router.get(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
-    validateRequestParams,
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams
   ],
-  getHotelImageById,
+  getHotelImageById
 );
 
 router.put(
@@ -43,8 +42,7 @@ router.put(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
+    param("id", "The ID must be a valid MongoID").isMongoId(),
     body("image_url")
       .optional()
       .not()
@@ -54,9 +52,9 @@ router.put(
       .optional()
       .isBoolean()
       .withMessage("El campo is_main_image debe ser un booleano"),
-    validateRequestParams,
+    validateRequestParams
   ],
-  putHotelImage,
+  putHotelImage
 );
 
 router.post(
@@ -68,11 +66,11 @@ router.post(
     body("hotel_id", "El ID del hotel es requerido").isMongoId(),
     body(
       "is_main_image",
-      "El valor de is_main_image debe ser un booleano",
+      "El valor de is_main_image debe ser un booleano"
     ).isBoolean(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  hotelImagePost,
+  hotelImagePost
 );
 
 router.delete(
@@ -80,11 +78,10 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
-    validateRequestParams,
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams
   ],
-  hotelImageDelete,
+  hotelImageDelete
 );
 
 export default router;

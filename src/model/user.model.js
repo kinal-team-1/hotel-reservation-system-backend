@@ -4,7 +4,7 @@ import { model, Schema } from "mongoose";
 export const [ADMIN_HOTEL_ROLE, CLIENT_ROLE, ADMIN_PLATFORM_ROLE] = [
   "ADMIN_HOTEL_ROLE",
   "CLIENT_ROLE",
-  "ADMIN_PLATFORM_ROLE",
+  "ADMIN_PLATFORM_ROLE"
 ];
 
 // Definir el esquema del usuario
@@ -12,39 +12,39 @@ const UserSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    required: true,
+    required: true
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   lastname: {
     type: String,
-    required: true,
+    required: true
   },
   created_at: {
     type: Date,
     required: true,
-    default: Date.now,
+    default: Date.now
   },
   updated_at: {
-    type: Date,
+    type: Date
   },
   role: {
     type: String,
     enum: [ADMIN_HOTEL_ROLE, CLIENT_ROLE],
-    required: true,
+    required: true
   },
   tp_status: {
     type: String,
     enum: ["ACTIVE", "INACTIVE"],
     required: true,
-    default: "ACTIVE",
-  },
+    default: "ACTIVE"
+  }
 });
 
 // Índice en el campo de correo electrónico

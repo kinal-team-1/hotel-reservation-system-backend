@@ -33,7 +33,7 @@ export const signup = async (req, res) => {
       password: encryptedPassword,
       name,
       lastname,
-      role,
+      role
     });
 
     await newUser.save();

@@ -45,7 +45,7 @@ export const putHotelImage = async (req, res) => {
     const updatedImage = await hotelImage.findByIdAndUpdate(
       id,
       { image_url, hotel_id, is_main_image },
-      { new: true },
+      { new: true }
     );
     if (!updatedImage) {
       return res.status(404).json({ message: "Imagen no encontrada" });

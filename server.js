@@ -26,7 +26,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/hotel", hotelRoutes);
 app.use("/api/hotelImg", hotelImgRoutes);
-app.use("/api/booking", bookingRoutes)
+app.use("/api/booking", bookingRoutes);
 
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Not found" });

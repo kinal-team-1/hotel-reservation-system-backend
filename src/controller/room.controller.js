@@ -10,12 +10,12 @@ export const roomsGet = async (req, res = response) => {
     roomModel
       .find(query)
       .skip(Number(page) * Number(limit))
-      .limit(Number(limit)),
+      .limit(Number(limit))
   ]);
 
   res.status(200).json({
     total,
-    rooms,
+    rooms
   });
 };
 
@@ -24,12 +24,12 @@ export const getRoomById = async (req, res) => {
   const room = await roomModel.findById({ _id: id });
   if (!room) {
     return res.status(404).json({
-      msg: "Room not found",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
-    room,
+    room
   });
 };
 
@@ -42,22 +42,22 @@ export const putRoom = async (req, res = response) => {
     people_capacity,
     night_price,
     room_type,
-    updated_at: new Date(),
+    updated_at: new Date()
   };
 
   const updatedRoom = await roomModel.findByIdAndUpdate(id, roomToUpdate, {
-    new: true,
+    new: true
   });
 
   if (!updatedRoom) {
     return res.status(404).json({
-      msg: "Room not found",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
     msg: "Room updated successfully",
-    room: updatedRoom,
+    room: updatedRoom
   });
 };
 
@@ -67,18 +67,18 @@ export const roomDelete = async (req, res) => {
   const room = await roomModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
-    { new: true },
+    { new: true }
   );
 
   if (!room) {
     return res.status(404).json({
-      msg: "Room not found",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
     msg: "Room deleted successfully",
-    room,
+    room
   });
 };
 
@@ -88,11 +88,11 @@ export const roomPost = async (req, res) => {
     description,
     people_capacity,
     night_price,
-    room_type,
+    room_type
   });
 
   await room.save();
   res.status(201).json({
-    room,
+    room
   });
 };

@@ -9,7 +9,7 @@ import {
   getRoomById,
   putRoom,
   roomDelete,
-  roomPost,
+  roomPost
 } from "../controller/room.controller.js";
 
 const router = Router();
@@ -19,18 +19,18 @@ router.get(
   [
     query("limit").optional().isInt().withMessage("`limit` must be an int"),
     query("page").optional().isInt().withMessage("`page` must be an int"),
-    validateRequestParams,
+    validateRequestParams
   ],
-  roomsGet,
+  roomsGet
 );
 
 router.get(
   "/:id",
   [
-    param("id", "`id` is required and must be a MongoID").isMongoId(),
-    validateRequestParams,
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams
   ],
-  getRoomById,
+  getRoomById
 );
 
 router.put(
@@ -41,13 +41,13 @@ router.put(
     param("id").isMongoId(),
     body(
       "description",
-      "If description is provided, it must have at least 4 characters",
+      "If description is provided, it must have at least 4 characters"
     )
       .optional()
       .isLength({ min: 4 }),
     body(
       "people_capacity",
-      "If people_capacity is provided, it must be a valid number",
+      "If people_capacity is provided, it must be a valid number"
     )
       .optional()
       .isInt(),
@@ -57,9 +57,9 @@ router.put(
     body("room_type", "If room_type is provided, it must be a valid string")
       .optional()
       .notEmpty(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  putRoom,
+  putRoom
 );
 
 router.post(
@@ -69,20 +69,20 @@ router.post(
     isAdminLogged,
     body(
       "description",
-      "`description` is required and must have at least 4 characters",
+      "`description` is required and must have at least 4 characters"
     ).isLength({ min: 4 }),
     body(
       "people_capacity",
-      "`people_capacity` is required and must be an Int",
+      "`people_capacity` is required and must be an Int"
     ).isInt(),
     body(
       "night_price",
-      "`night_price` is required and must be a number",
+      "`night_price` is required and must be a number"
     ).isNumeric(),
     body("room_type", "`room_type` is required").notEmpty(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  roomPost,
+  roomPost
 );
 
 router.delete(
@@ -90,10 +90,10 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "`id` is required and must be a MongoID").isMongoId(),
-    validateRequestParams,
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams
   ],
-  roomDelete,
+  roomDelete
 );
 
 export default router;

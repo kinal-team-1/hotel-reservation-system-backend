@@ -8,7 +8,7 @@ import {
   hotelPost,
   hotelsGet,
   getHotelById,
-  hotelDelete,
+  hotelDelete
 } from "../controller/hoteles.controller.js";
 
 const router = Router();
@@ -18,18 +18,18 @@ router.get(
   [
     query("limit").optional().isInt().withMessage("`limit` must be an Int"),
     query("page").optional().isInt().withMessage("`limit` must be an Int"),
-    validateRequestParams,
+    validateRequestParams
   ],
-  hotelsGet,
+  hotelsGet
 );
 
 router.get(
   "/:id",
   [
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  getHotelById,
+  getHotelById
 );
 
 router.put(
@@ -43,25 +43,25 @@ router.put(
       .isLength({ min: 4 }),
     body(
       "country",
-      "If `country` is provided, must be at least 3 characters long",
+      "If `country` is provided, must be at least 3 characters long"
     )
       .optional()
       .isLength({ min: 3 }),
     body(
       "address",
-      "If `address` is provided, must be at least 10 characters long",
+      "If `address` is provided, must be at least 10 characters long"
     )
       .optional()
       .isLength({ min: 10 }),
     body(
       "description",
-      "If `description` is provided, must be at least 30 characters long",
+      "If `description` is provided, must be at least 30 characters long"
     )
       .optional()
       .isLength({ min: 30 }),
-    validateRequestParams,
+    validateRequestParams
   ],
-  putHotel,
+  putHotel
 );
 
 router.post(
@@ -71,25 +71,25 @@ router.post(
     isAdminLogged,
     body(
       "name",
-      "`name` is required and must be at least 4 characters long",
+      "`name` is required and must be at least 4 characters long"
     ).isLength({ min: 4 }),
     body(
       "country",
-      "The field `country` is required and must be at least 3 characters long",
+      "The field `country` is required and must be at least 3 characters long"
     ).isLength({
-      min: 3,
+      min: 3
     }),
     body(
       "address",
-      "The field `address` is required and must be at least 10 characters long",
+      "The field `address` is required and must be at least 10 characters long"
     ).isLength({ min: 10 }),
     body(
       "description",
-      "The field `description` is required and must be at least 30 characters long",
+      "The field `description` is required and must be at least 30 characters long"
     ).isLength({ min: 30 }),
-    validateRequestParams,
+    validateRequestParams
   ],
-  hotelPost,
+  hotelPost
 );
 
 router.delete(
@@ -98,9 +98,9 @@ router.delete(
     validateJwt,
     isAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  hotelDelete,
+  hotelDelete
 );
 
 export default router;
