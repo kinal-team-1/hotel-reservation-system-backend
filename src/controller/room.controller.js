@@ -1,98 +1,97 @@
-import roomModel from "../model/room.model.js";
+import RoomModel from "../model/room.model.js";
 import { response } from "express";
 
 export const roomsGet = async (req, res = response) => {
-  const { limite, desde } = req.query;
+  const { limit, page } = req.query;
   const query = { tp_status: "ACTIVE" };
 
   const [total, rooms] = await Promise.all([
-    roomModel.countDocuments(query),
-    roomModel.find(query).skip(Number(desde)).limit(Number(limite)),
+    RoomModel.countDocuments(query),
+    RoomModel.find(query)
+      .skip(Number(page) * Number(limit))
+      .limit(Number(limit))
   ]);
 
   res.status(200).json({
     total,
-    rooms,
+    rooms
   });
 };
 
 export const getRoomById = async (req, res) => {
   const { id } = req.params;
-  const room = await roomModel.findById({ _id: id });
+  const room = await RoomModel.findById({ _id: id });
   if (!room) {
     return res.status(404).json({
-      msg: "Habitación no encontrada",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
-    room,
+    room
   });
 };
 
 export const putRoom = async (req, res = response) => {
   const { id } = req.params;
-  const { description, people_capacity, night_price, tipo_habitacion } =
-    req.body;
+  const { description, people_capacity, night_price, room_type } = req.body;
 
   const roomToUpdate = {
     description,
     people_capacity,
     night_price,
-    tipo_habitacion,
-    updated_at: new Date(),
+    room_type,
+    updated_at: new Date()
   };
 
-  const updatedRoom = await roomModel.findByIdAndUpdate(id, roomToUpdate, {
-    new: true,
+  const updatedRoom = await RoomModel.findByIdAndUpdate(id, roomToUpdate, {
+    new: true
   });
 
   if (!updatedRoom) {
     return res.status(404).json({
-      msg: "Habitación no encontrada",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
-    msg: "Habitación actualizada exitosamente",
-    room: updatedRoom,
+    msg: "Room updated successfully",
+    room: updatedRoom
   });
 };
 
 export const roomDelete = async (req, res) => {
   const { id } = req.params;
 
-  const room = await roomModel.findByIdAndUpdate(
+  const room = await RoomModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
-    { new: true },
+    { new: true }
   );
 
   if (!room) {
     return res.status(404).json({
-      msg: "Habitación no encontrada",
+      msg: "Room not found"
     });
   }
 
   res.status(200).json({
-    msg: "Habitación eliminada exitosamente",
-    room,
+    msg: "Room deleted successfully",
+    room
   });
 };
 
 export const roomPost = async (req, res) => {
-  const { description, people_capacity, night_price, tipo_habitacion } =
-    req.body;
-  const room = new roomModel({
+  const { description, people_capacity, night_price, room_type } = req.body;
+  const room = new RoomModel({
     description,
     people_capacity,
     night_price,
-    tipo_habitacion,
-    tp_status: "ACTIVE",
+    room_type
   });
 
   await room.save();
   res.status(201).json({
-    room,
+    room
   });
 };

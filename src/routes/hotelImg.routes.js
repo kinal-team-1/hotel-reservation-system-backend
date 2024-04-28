@@ -31,8 +31,7 @@ router.get(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
+    param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
   getHotelImageById,
@@ -43,8 +42,7 @@ router.put(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
+    param("id", "The ID must be a valid MongoID").isMongoId(),
     body("image_url")
       .optional()
       .not()
@@ -80,8 +78,7 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
+    param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
   hotelImageDelete,

@@ -2,23 +2,21 @@ import UserModel from "../model/user.model.js";
 import bcryptjs from "bcryptjs";
 
 export const getAllUsers = async (req, res) => {
-  const { limit = 5, page = 0 } = req.query;
+  const { limit, page = 0 } = req.query;
 
   const query = { tp_status: "ACTIVE" };
   const [total, users] = await Promise.allSettled([
-    UserModel.countDocuments(query)
-      .limit(parseInt(limit))
-      .skip(parseInt(page) * parseInt(limit)),
+    UserModel.countDocuments(query),
     UserModel.find(query)
       .select("name lastname email role")
-      .limit(parseInt(limit))
-      .skip(parseInt(page) * parseInt(limit)),
+      .limit(parseInt(Number(limit)))
+      .skip(parseInt(Number(page)) * parseInt(Number(limit)))
   ]);
 
   res.status(200).json({
     total: total.value,
     page,
-    users: users.value,
+    users: users.value
   });
 };
 
@@ -31,7 +29,7 @@ export const createUser = async (req, res) => {
     lastname,
     email,
     password: encryptedPassword,
-    role,
+    role
   });
   await user.save();
 
@@ -41,7 +39,7 @@ export const createUser = async (req, res) => {
 export const getUserById = async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findOne({ _id: id, tp_status: "ACTIVE" }).select(
-    "name lastname email role",
+    "name lastname email role"
   );
 
   if (!user) {
@@ -69,7 +67,7 @@ export const updateUserById = async (req, res) => {
 
   const user = await UserModel.findOneAndUpdate(
     { _id: id, tp_status: "ACTIVE" },
-    userUpdated,
+    userUpdated
   ).select("name lastname email role password");
 
   if (!user) {
@@ -77,7 +75,7 @@ export const updateUserById = async (req, res) => {
   }
 
   res.status(200).json({
-    user: { ...user._doc, ...userUpdated },
+    user: { ...user._doc, ...userUpdated }
   });
 };
 
@@ -85,7 +83,7 @@ export const deleteUserById = async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findOneAndUpdate(
     { _id: id, tp_status: "ACTIVE" },
-    { tp_status: "INACTIVE" },
+    { tp_status: "INACTIVE" }
   ).select("name lastname email role");
 
   if (!user) {

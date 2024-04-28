@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   CLIENT_ROLE,
   ADMIN_HOTEL_ROLE,
-  ADMIN_PLATFORM_ROLE,
+  ADMIN_PLATFORM_ROLE
 } from "../model/user.model.js";
 import { validateJwt } from "../middleware/validate-jwt.js";
 import { isAdminLogged } from "../middleware/is-logged.js";
@@ -13,7 +13,7 @@ import {
   deleteUserById,
   getAllUsers,
   getUserById,
-  updateUserById,
+  updateUserById
 } from "../controller/user.controller.js";
 
 const router = Router();
@@ -26,29 +26,29 @@ router
       isAdminLogged,
       query("limit", "Limit must be an integer").optional().isInt(),
       query("page", "Page must be an integer").optional().isInt(),
-      validateRequestParams,
+      validateRequestParams
     ],
-    getAllUsers,
+    getAllUsers
   )
   .post(
     [
       body("email", "Must be a valid Email").isEmail(),
       body(
         "password",
-        "Must have at least 6 characters, 1 upper case, and 1 number",
+        "Must have at least 6 characters, 1 upper case, and 1 number"
       ).isStrongPassword({
         minLength: 6,
         minUppercase: 1,
         minNumbers: 1,
-        minSymbols: 0,
+        minSymbols: 0
       }),
       body(
         "role",
-        `Role must be defined, must be one of these: ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`,
+        `Role must be defined, must be one of these: ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`
       ).isIn([ADMIN_HOTEL_ROLE, CLIENT_ROLE]),
-      validateRequestParams,
+      validateRequestParams
     ],
-    createUser,
+    createUser
   );
 
 router
@@ -57,10 +57,10 @@ router
     [
       validateJwt,
       isAdminLogged,
-      param("id", "Id must be a valid ObjectId").isMongoId(),
-      validateRequestParams,
+      param("id", "The ID must be a valid MongoID").isMongoId(),
+      validateRequestParams
     ],
-    getUserById,
+    getUserById
   )
   .put(
     [
@@ -71,33 +71,33 @@ router
         .isEmail(),
       body(
         "password",
-        "If defined, must have at least 6 characters, 1 upper case, and 1 number",
+        "If defined, must have at least 6 characters, 1 upper case, and 1 number"
       )
         .optional()
         .isStrongPassword({
           minLength: 6,
           minUppercase: 1,
           minNumbers: 1,
-          minSymbols: 0,
+          minSymbols: 0
         }),
       body(
         "role",
-        `If defined, role must be defined, must be one of these: ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`,
+        `If defined, role must be defined, must be one of these: ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`
       )
         .optional()
         .isIn([ADMIN_HOTEL_ROLE, CLIENT_ROLE]),
-      validateRequestParams,
+      validateRequestParams
     ],
-    updateUserById,
+    updateUserById
   )
   .delete(
     [
       validateJwt,
       isAdminLogged,
-      param("id", "Id must be a valid ObjectId").isMongoId(),
-      validateRequestParams,
+      param("id", "The ID must be a valid MongoID").isMongoId(),
+      validateRequestParams
     ],
-    deleteUserById,
+    deleteUserById
   );
 
 export default router;

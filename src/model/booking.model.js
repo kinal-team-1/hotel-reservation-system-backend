@@ -3,37 +3,37 @@ import { Schema, model } from "mongoose";
 const bookingSchema = new Schema({
   date_start: {
     type: Date,
-    required: [true, "La fecha de inicio es requerida"],
+    required: [true, "The `date_start` is required"]
   },
   date_end: {
     type: Date,
-    required: [true, "La fecha de fin es requerida"],
+    required: [true, "The `date_end` is required"]
   },
   created_at: {
     type: Date,
     default: Date.now,
-    required: [true, "La fecha de creación es requerida"],
+    required: [true, "The `created_at` is required"]
   },
   updated_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   tp_status: {
     type: String,
-    required: [true, "El estado del hotel es requerido"],
+    required: [true, "The `tp_status` is required"],
     enum: ["ACTIVE", "INACTIVE"],
     default: "ACTIVE"
   },
   room: {
     type: Schema.Types.ObjectId,
-    ref: 'Room',
-    required: [true, "El ID de la habitación es requerido"],
+    ref: "Room",
+    required: [true, "The `room` ID is required"]
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: [true, "El ID del usuario es requerido"],
-  },
+    ref: "User",
+    required: [true, "The `user` ID is required"]
+  }
 });
 
 const bookingModel = model("Booking", bookingSchema);

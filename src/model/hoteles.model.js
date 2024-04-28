@@ -3,34 +3,35 @@ import { Schema, model } from "mongoose";
 const hotelSchema = new Schema({
   name: {
     type: String,
-    required: [true, "El nombre es requerido"],
+    required: [true, "The `name` is required"]
   },
   country: {
     type: String,
-    required: [true, "El país es requerido"],
+    required: [true, "The `country` is required"]
   },
   address: {
     type: String,
-    required: [true, "La dirección es requerida"],
+    required: [true, "The `address` is required"]
   },
   description: {
     type: String,
-    required: [true, "La descripción es requerida"],
+    required: [true, "The `description` is required"]
   },
   created_at: {
     type: Date,
     default: Date.now,
-    required: [true, "La fecha de creación es requerida"],
+    required: [true, "The `created_at` is required"]
   },
   updated_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   tp_status: {
     type: String,
-    required: [true, "El estado del hotel es requerido"],
+    required: [true, "The `tp_status` is required"],
     enum: ["ACTIVE", "INACTIVE"],
-  },
+    default: "ACTIVE"
+  }
 });
 
 const hotelModel = model("Hotel", hotelSchema);

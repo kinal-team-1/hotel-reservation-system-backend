@@ -3,38 +3,38 @@ import { Schema, model } from "moongose";
 const roomSchema = new Schema({
   description: {
     type: String,
-    required: [true, "la descripcion es requerida"],
+    required: [true, "The `description` is required"]
   },
   people_capacity: {
     type: Number,
-    required: [true, "La capacidad de personas es requerida"],
-    integer: true,
+    required: [true, "The `people_capacity` is required"],
+    integer: true
   },
   night_price: {
     type: Number,
-    required: [true, "El precio por noche es requerido"],
-    double: true,
+    required: [true, "The `night_price` is required"],
+    double: true
   },
-  tipo_habitacion: {
+  room_type: {
     type: String,
-    required: [true, "El tipo de habitacion es requerido"],
+    required: [true, ""]
   },
   created_at: {
     type: Date,
     default: Date.now,
-    required: [true, "La fecha de creación es requerida"],
+    required: [true, "La fecha de creación es requerida"]
   },
   updated_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   tp_status: {
     type: String,
     required: [true, "El estado del hotel es requerido"],
-    enum: ["ACTIVE", "INACTIVE"],
-  },
+    enum: ["ACTIVE", "INACTIVE"]
+  }
 });
 
-const roomModel = model("Habitacion", roomSchema);
+const roomModel = model("Room", roomSchema);
 
 export default roomModel;

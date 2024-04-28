@@ -4,11 +4,9 @@ import { validateJwt } from "../middleware/validate-jwt.js";
 import { isAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
-  putRoomImage,
   roomImagePost,
   roomImagesGet,
-  getRoomImageById,
-  roomImageDelete,
+  roomImageDelete
 } from "../controller/roomImg.controller.js";
 
 const router = Router();
@@ -18,43 +16,12 @@ router.get(
   [
     validateJwt,
     isAdminLogged,
-    query("room_id", "El room_id no es un ObjectId válido")
+    query("room_id", "if `room_id` is defined, it must be a valid MongoId")
       .optional()
       .isMongoId(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  roomImagesGet,
-);
-
-router.get(
-  "/:id",
-  [
-    validateJwt,
-    isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    validateRequestParams,
-  ],
-  getRoomImageById,
-);
-
-router.put(
-  "/:id",
-  [
-    validateJwt,
-    isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    body("image_url")
-      .optional()
-      .not()
-      .isEmpty()
-      .withMessage("La URL de la imagen no puede estar vacía"),
-    body("is_main_image")
-      .optional()
-      .isBoolean()
-      .withMessage("El campo is_main_image debe ser un booleano"),
-    validateRequestParams,
-  ],
-  putRoomImage,
+  roomImagesGet
 );
 
 router.post(
@@ -62,15 +29,23 @@ router.post(
   [
     validateJwt,
     isAdminLogged,
-    body("image_url", "La URL de la imagen es requerida").not().isEmpty(),
-    body("room_id", "El ID del cuarto es requerido").isMongoId(),
+    body(
+      "image_url",
+      "The field `image_url` is required and must be a valid URL"
+    )
+      .not()
+      .isEmpty(),
+    body(
+      "room_id",
+      "The field `room_id` is required and must be a valid MongoId"
+    ).isMongoId(),
     body(
       "is_main_image",
-      "El valor de is_main_image debe ser un booleano",
+      "The field `is_main_image` is required and must be a boolean"
     ).isBoolean(),
-    validateRequestParams,
+    validateRequestParams
   ],
-  roomImagePost,
+  roomImagePost
 );
 
 router.delete(
@@ -78,10 +53,10 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    validateRequestParams,
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams
   ],
-  roomImageDelete,
+  roomImageDelete
 );
 
 export default router;

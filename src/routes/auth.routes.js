@@ -5,7 +5,7 @@ import { login, signup } from "../controller/auth.controller.js";
 import {
   ADMIN_HOTEL_ROLE,
   ADMIN_PLATFORM_ROLE,
-  CLIENT_ROLE,
+  CLIENT_ROLE
 } from "../model/user.model.js";
 
 const router = Router();
@@ -13,31 +13,53 @@ const router = Router();
 router.post(
   "/login",
   [
-    body("email", "Must be a valid Email").isEmail(),
-    body("password", "Password must have at least 6 characters").isLength({
-      min: 6,
+    body(
+      "email",
+      "The field `email` is required and must be a valid email"
+    ).isEmail(),
+    body(
+      "password",
+      "The field `password` is required and must be at least 6 characters long"
+    ).isLength({
+      min: 6
     }),
-    validateRequestParams,
+    validateRequestParams
   ],
-  login,
+  login
 );
 
 router.post(
   "/signup",
   [
-    body("email", "Must be a valid Email").isEmail(),
-    body("password", "Password must have at least 6 characters").isLength({
-      min: 6,
+    body(
+      "email",
+      "The field `email` is required and must be a valid email"
+    ).isEmail(),
+    body(
+      "password",
+      "The field `password` is required and must be at least 6 characters long"
+    ).isLength({
+      min: 6
     }),
-    body("name", "Name is required").exists(),
-    body("lastname", "Lastname is required").exists(),
+    body(
+      "name",
+      "The field `name` is required and must be at least 3 characters long"
+    )
+      .exists()
+      .isLength({ min: 3 }),
+    body(
+      "lastname",
+      "The field `lastname` is required and must be at least 3 characters long"
+    )
+      .exists()
+      .isLength({ min: 3 }),
     body(
       "role",
-      `Role must be defined, must be one of these ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`,
+      `Role must be defined, must be one of these ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`
     ).isIn([CLIENT_ROLE, ADMIN_HOTEL_ROLE, ADMIN_PLATFORM_ROLE]),
-    validateRequestParams,
+    validateRequestParams
   ],
-  signup,
+  signup
 );
 
 export default router;
