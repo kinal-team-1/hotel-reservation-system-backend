@@ -2,10 +2,13 @@ import favUserHotel from "../model/favoriteHotel.model.js";
 import { response } from "express";
 
 export const favoritesGet = async (req, res = response) => {
-  const { limite, page } = req.query;
+  const { limit, page } = req.query;
   const [total, favorites] = await Promise.all([
     favUserHotel.countDocuments(),
-    favUserHotel.find().skip(page * limit).limit(limite),
+    favUserHotel
+      .find()
+      .skip(page * limit)
+      .limit(limit),
   ]);
 
   res.status(200).json({

@@ -1,3 +1,7 @@
+import mongoose from "mongoose";
+
+const { Schema } = mongoose;
+
 const favoriteHotelSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -11,7 +15,8 @@ const favoriteHotelSchema = new Schema({
   },
 });
 
-
 favoriteHotelSchema.index({ user: 1, hotel: 1 }, { unique: true });
 
-const FavoriteHotel = mongoose.model('FavoriteHotel', favoriteHotelSchema);
+const FavoriteHotel = mongoose.model("FavoriteHotel", favoriteHotelSchema);
+
+export default FavoriteHotel;
