@@ -22,6 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm i
 
-      - name: Check eslint
-        run: npm run lint
+      - name: Check eslint and imports
+        run: npm run check
 
