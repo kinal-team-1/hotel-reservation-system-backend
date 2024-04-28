@@ -6,7 +6,10 @@ export const bookingsGet = async (req, res = response) => {
   const query = { tp_status: "ACTIVE" };
   const [total, bookings] = await Promise.all([
     bookingModel.countDocuments(query),
-    bookingModel.find(query).skip(Number(page) * Number(limit)).limit(Number(limit))
+    bookingModel
+      .find(query)
+      .skip(Number(page) * Number(limit))
+      .limit(Number(limit)),
   ]);
   res.status(200).json({
     total,
@@ -35,12 +38,16 @@ export const putBooking = async (req, res = response) => {
   const bookingToUpdate = {
     date_start,
     date_end,
-    updated_at: new Date(), 
+    updated_at: new Date(),
   };
 
-  const updatedBooking = await bookingModel.findByIdAndUpdate(id, bookingToUpdate, {
-    new: true,
-  });
+  const updatedBooking = await bookingModel.findByIdAndUpdate(
+    id,
+    bookingToUpdate,
+    {
+      new: true,
+    },
+  );
 
   if (!updatedBooking) {
     return res.status(404).json({
@@ -60,7 +67,7 @@ export const bookingDelete = async (req, res) => {
   const booking = await bookingModel.findByIdAndUpdate(
     id,
     { tp_status: "INACTIVE" },
-    { new: true }
+    { new: true },
   );
 
   if (!booking) {
@@ -78,12 +85,11 @@ export const bookingDelete = async (req, res) => {
 export const bookingPost = async (req, res) => {
   const { date_start, date_end, room_id, user_id } = req.body;
 
-  const tp_status = "ACTIVE"; 
   const booking = new bookingModel({
     date_start,
     date_end,
-    room_id,
-    user_id,
+    room: room_id,
+    user: user_id,
   });
 
   try {
@@ -98,4 +104,3 @@ export const bookingPost = async (req, res) => {
     });
   }
 };
-

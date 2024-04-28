@@ -2,12 +2,12 @@ import hotelModel from "../model/hoteles.model.js";
 import { response } from "express";
 
 export const hotelsGet = async (req, res = response) => {
-  const { limite, desde } = req.query;
+  const { limit, page } = req.query;
   const query = { tp_status: "ACTIVE" };
 
   const [total, hotels] = await Promise.all([
     hotelModel.countDocuments(query),
-    hotelModel.find(query).skip(Number(desde)).limit(Number(limite)),
+    hotelModel.find(query).skip(Number(page)).limit(Number(limit)),
   ]);
 
   res.status(200).json({
@@ -21,7 +21,7 @@ export const getHotelById = async (req, res) => {
   const hotel = await hotelModel.findById({ _id: id });
   if (!hotel) {
     return res.status(404).json({
-      msg: "Hotel no encontrado",
+      msg: "Room not found",
     });
   }
 
@@ -48,12 +48,12 @@ export const putHotel = async (req, res = response) => {
 
   if (!updatedHotel) {
     return res.status(404).json({
-      msg: "Hotel no encontrado",
+      msg: "Room not found",
     });
   }
 
   res.status(200).json({
-    msg: "Hotel actualizado exitosamente",
+    msg: "Room updated successfully",
     hotel: updatedHotel,
   });
 };

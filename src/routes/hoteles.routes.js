@@ -16,14 +16,8 @@ const router = Router();
 router.get(
   "/",
   [
-    query("limite")
-      .optional()
-      .isNumeric()
-      .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
-      .optional()
-      .isNumeric()
-      .withMessage("El valor desde debe ser numérico"),
+    query("limit").optional().isInt().withMessage("`limit` must be an Int"),
+    query("page").optional().isInt().withMessage("`limit` must be an Int"),
     validateRequestParams,
   ],
   hotelsGet,
@@ -31,7 +25,10 @@ router.get(
 
 router.get(
   "/:id",
-  [param("id").isMongoId(), validateRequestParams],
+  [
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams,
+  ],
   getHotelById,
 );
 
@@ -41,21 +38,24 @@ router.put(
     validateJwt,
     isAdminLogged,
     param("id").isMongoId(),
-    body("name", "La actualizacion de nombre del hotel no puede estar vacia")
+    body("name", "If `name` is provided, must be at least 4 characters long")
       .optional()
       .isLength({ min: 4 }),
     body(
       "country",
-      "Al actualizar el pais el espacio no tiene que dejar el espacio vacio",
+      "If `country` is provided, must be at least 3 characters long",
     )
       .optional()
       .isLength({ min: 3 }),
-    body("address", "La direccion puede ser mas especifica")
+    body(
+      "address",
+      "If `address` is provided, must be at least 10 characters long",
+    )
       .optional()
       .isLength({ min: 10 }),
     body(
       "description",
-      "La direccion se necesita que ser mas accesible in entendible para los clientes",
+      "If `description` is provided, must be at least 30 characters long",
     )
       .optional()
       .isLength({ min: 30 }),
@@ -71,18 +71,21 @@ router.post(
     isAdminLogged,
     body(
       "name",
-      "El nombre de ser definido, no puede estar vacío, debe tener 4 caracteres minimo",
+      "`name` is required and must be at least 4 characters long",
     ).isLength({ min: 4 }),
-    body("country", "El país donde se ubica el hotel es necesario").isLength({
+    body(
+      "country",
+      "The field `country` is required and must be at least 3 characters long",
+    ).isLength({
       min: 3,
     }),
     body(
       "address",
-      "La dirección se necesitra saber para poder ubicar de mejor manera",
+      "The field `address` is required and must be at least 10 characters long",
     ).isLength({ min: 10 }),
     body(
       "description",
-      "La descripción debe ser clara y entendible para los clientes",
+      "The field `description` is required and must be at least 30 characters long",
     ).isLength({ min: 30 }),
     validateRequestParams,
   ],
@@ -94,8 +97,7 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
-    param("id").isMongoId(),
+    param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
   hotelDelete,

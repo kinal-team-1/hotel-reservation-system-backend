@@ -3,21 +3,21 @@ import { Schema, model } from "moongose";
 const roomSchema = new Schema({
   description: {
     type: String,
-    required: [true, "la descripcion es requerida"],
+    required: [true, "The `description` is required"],
   },
   people_capacity: {
     type: Number,
-    required: [true, "La capacidad de personas es requerida"],
+    required: [true, "The `people_capacity` is required"],
     integer: true,
   },
   night_price: {
     type: Number,
-    required: [true, "El precio por noche es requerido"],
+    required: [true, "The `night_price` is required"],
     double: true,
   },
-  tipo_habitacion: {
+  room_type: {
     type: String,
-    required: [true, "El tipo de habitacion es requerido"],
+    required: [true, ""],
   },
   created_at: {
     type: Date,
@@ -35,6 +35,6 @@ const roomSchema = new Schema({
   },
 });
 
-const roomModel = model("Habitacion", roomSchema);
+const roomModel = model("Room", roomSchema);
 
 export default roomModel;

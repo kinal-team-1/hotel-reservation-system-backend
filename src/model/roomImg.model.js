@@ -3,12 +3,12 @@ import { Schema, model } from "mongoose";
 const roomImageSchema = new Schema({
   image_url: {
     type: String,
-    required: [true, "La URL es necesaria"],
+    required: [true, "The URL is necessary"],
   },
   room_id: {
     type: Schema.Types.ObjectId,
     ref: "Room",
-    required: [true, "El ID es necesario"],
+    required: [true, "The URL is necessary"],
   },
   is_main_image: {
     type: Boolean,
@@ -18,6 +18,6 @@ const roomImageSchema = new Schema({
 
 roomImageSchema.index({ room_id: 1 });
 
-const roomImage = model("roomImage", roomImageSchema);
+const roomImage = model("RoomImage", roomImageSchema);
 
 export default roomImage;

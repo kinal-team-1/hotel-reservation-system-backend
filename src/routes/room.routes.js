@@ -10,21 +10,15 @@ import {
   putRoom,
   roomDelete,
   roomPost,
-} from "../controller/rooms.controller.js";
+} from "../controller/room.controller.js";
 
 const router = Router();
 
 router.get(
   "/",
   [
-    query("limite")
-      .optional()
-      .isNumeric()
-      .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
-      .optional()
-      .isNumeric()
-      .withMessage("El valor desde debe ser numérico"),
+    query("limit").optional().isInt().withMessage("`limit` must be an int"),
+    query("page").optional().isInt().withMessage("`page` must be an int"),
     validateRequestParams,
   ],
   roomsGet,
@@ -32,7 +26,10 @@ router.get(
 
 router.get(
   "/:id",
-  [param("id").isMongoId(), validateRequestParams],
+  [
+    param("id", "`id` is required and must be a MongoID").isMongoId(),
+    validateRequestParams,
+  ],
   getRoomById,
 );
 
@@ -44,20 +41,20 @@ router.put(
     param("id").isMongoId(),
     body(
       "description",
-      "La actualización de la descripción de la habitación no puede estar vacía",
+      "If description is provided, it must have at least 4 characters",
     )
       .optional()
       .isLength({ min: 4 }),
     body(
       "people_capacity",
-      "La capacidad de personas debe ser un número entero",
+      "If people_capacity is provided, it must be a valid number",
     )
       .optional()
       .isInt(),
-    body("night_price", "El precio por noche debe ser un número válido")
+    body("night_price", "If night_price is provided, it must be a valid number")
       .optional()
       .isNumeric(),
-    body("tipo_habitacion", "El tipo de habitación es requerido")
+    body("room_type", "If room_type is provided, it must be a valid string")
       .optional()
       .notEmpty(),
     validateRequestParams,
@@ -72,11 +69,17 @@ router.post(
     isAdminLogged,
     body(
       "description",
-      "La descripción de la habitación es requerida y debe tener al menos 4 caracteres",
+      "`description` is required and must have at least 4 characters",
     ).isLength({ min: 4 }),
-    body("people_capacity", "La capacidad de personas es requerida").isInt(),
-    body("night_price", "El precio por noche es requerido").isNumeric(),
-    body("tipo_habitacion", "El tipo de habitación es requerido").notEmpty(),
+    body(
+      "people_capacity",
+      "`people_capacity` is required and must be an Int",
+    ).isInt(),
+    body(
+      "night_price",
+      "`night_price` is required and must be a number",
+    ).isNumeric(),
+    body("room_type", "`room_type` is required").notEmpty(),
     validateRequestParams,
   ],
   roomPost,
@@ -87,7 +90,7 @@ router.delete(
   [
     validateJwt,
     isAdminLogged,
-    param("id", "No es un id válido").isMongoId(),
+    param("id", "`id` is required and must be a MongoID").isMongoId(),
     validateRequestParams,
   ],
   roomDelete,
