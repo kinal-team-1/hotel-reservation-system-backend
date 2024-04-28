@@ -21,7 +21,7 @@ const reviewSchema = new Schema({
     type: String,
     required: [true, "Status is required"],
     enum: ["ACTIVE", "INACTIVE"],
-    default: "ACTIVE"
+    default: "ACTIVE",
   },
   is_customer: {
     type: Boolean,
@@ -34,7 +34,7 @@ const reviewSchema = new Schema({
   hotel_id: {
     type: String,
     required: [true, "Hotel ID is required"],
-  }
+  },
 });
 
 const Review = model("Review", reviewSchema);

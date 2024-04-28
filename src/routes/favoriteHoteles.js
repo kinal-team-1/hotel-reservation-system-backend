@@ -7,7 +7,6 @@ import { validateRequestParams } from "../middleware/validate-request-params.js"
 import {
   favoritesGet,
   getFavoriteById,
-  putFavorite,
   favoriteDelete,
   favoritePost,
 } from "../controller/favoriteHotel.controller.js";
@@ -27,13 +26,13 @@ router.get(
       .withMessage("The value from must be numeric"),
     validateRequestParams,
   ],
-  favoritesGet
+  favoritesGet,
 );
 
 router.get(
   "/:id",
   [param("id").isMongoId(), validateRequestParams],
-  getFavoriteById
+  getFavoriteById,
 );
 
 router.post(
@@ -45,7 +44,7 @@ router.post(
     param("hotel_id", "Hotel ID is required").notEmpty().isMongoId(),
     validateRequestParams,
   ],
-  favoritePost
+  favoritePost,
 );
 
 router.delete(
@@ -56,7 +55,7 @@ router.delete(
     param("id", "It is not a valid id").isMongoId(),
     validateRequestParams,
   ],
-  favoriteDelete
+  favoriteDelete,
 );
 
 export default router;
