@@ -33,7 +33,7 @@ export const signup = async (req, res) => {
       password: encryptedPassword,
       name,
       lastname,
-      role
+      role,
     });
 
     await newUser.save();
@@ -46,3 +46,13 @@ export const signup = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+export const validateToken = async (req, res) => {
+  // the validation will be done by the middleware, here we are 
+  // just gonna handle the success case
+  return res.status(200).json({
+    message: "User is authorized",
+    data: req.loggedUser,
+  })
+}

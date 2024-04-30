@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
-import { isAdminLogged } from "../middleware/is-logged.js";
+import { isHotelAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 
 import {
@@ -44,7 +44,7 @@ router.delete(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "It is not a valid id").isMongoId(),
     validateRequestParams,
   ],

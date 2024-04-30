@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
-import { isAdminLogged } from "../middleware/is-logged.js";
+import { isHotelAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
   roomImagePost,
@@ -16,7 +16,7 @@ router.get(
   "/",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     query("room_id", "if `room_id` is defined, it must be a valid MongoId")
       .optional()
       .isMongoId(),
@@ -29,7 +29,7 @@ router.post(
   "/",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     body(
       "image_url",
       "The field `image_url` is required and must be a valid URL",
@@ -53,7 +53,7 @@ router.delete(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
@@ -64,7 +64,7 @@ router.put(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
     body(
       "room_id",

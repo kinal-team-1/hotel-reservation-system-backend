@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
-import { isAdminLogged } from "../middleware/is-logged.js";
+import { isHotelAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
   putHotel,
   hotelPost,
   hotelsGet,
   getHotelById,
-  hotelDelete
+  hotelDelete,
 } from "../controller/hoteles.controller.js";
 
 const router = Router();
@@ -18,89 +18,89 @@ router.get(
   [
     query("limit").optional().isInt().withMessage("`limit` must be an Int"),
     query("page").optional().isInt().withMessage("`limit` must be an Int"),
-    validateRequestParams
+    validateRequestParams,
   ],
-  hotelsGet
+  hotelsGet,
 );
 
 router.get(
   "/:id",
   [
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    validateRequestParams
+    validateRequestParams,
   ],
-  getHotelById
+  getHotelById,
 );
 
 router.put(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id").isMongoId(),
     body("name", "If `name` is provided, must be at least 4 characters long")
       .optional()
       .isLength({ min: 4 }),
     body(
       "country",
-      "If `country` is provided, must be at least 3 characters long"
+      "If `country` is provided, must be at least 3 characters long",
     )
       .optional()
       .isLength({ min: 3 }),
     body(
       "address",
-      "If `address` is provided, must be at least 10 characters long"
+      "If `address` is provided, must be at least 10 characters long",
     )
       .optional()
       .isLength({ min: 10 }),
     body(
       "description",
-      "If `description` is provided, must be at least 30 characters long"
+      "If `description` is provided, must be at least 30 characters long",
     )
       .optional()
       .isLength({ min: 30 }),
-    validateRequestParams
+    validateRequestParams,
   ],
-  putHotel
+  putHotel,
 );
 
 router.post(
   "/",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     body(
       "name",
-      "`name` is required and must be at least 4 characters long"
+      "`name` is required and must be at least 4 characters long",
     ).isLength({ min: 4 }),
     body(
       "country",
-      "The field `country` is required and must be at least 3 characters long"
+      "The field `country` is required and must be at least 3 characters long",
     ).isLength({
-      min: 3
+      min: 3,
     }),
     body(
       "address",
-      "The field `address` is required and must be at least 10 characters long"
+      "The field `address` is required and must be at least 10 characters long",
     ).isLength({ min: 10 }),
     body(
       "description",
-      "The field `description` is required and must be at least 30 characters long"
+      "The field `description` is required and must be at least 30 characters long",
     ).isLength({ min: 30 }),
-    validateRequestParams
+    validateRequestParams,
   ],
-  hotelPost
+  hotelPost,
 );
 
 router.delete(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    validateRequestParams
+    validateRequestParams,
   ],
-  hotelDelete
+  hotelDelete,
 );
 
 export default router;
