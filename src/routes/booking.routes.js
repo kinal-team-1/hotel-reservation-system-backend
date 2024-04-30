@@ -7,7 +7,7 @@ import {
   getBookingById,
   putBooking,
   bookingDelete,
-  bookingPost
+  bookingPost,
 } from "../controller/booking.controller.js";
 
 const router = Router();
@@ -17,18 +17,18 @@ router.get(
   [
     query("limit").optional().isNumeric().withMessage("`limit` must be an int"),
     query("page").optional().isNumeric().withMessage("`page` must be an int"),
-    validateRequestParams
+    validateRequestParams,
   ],
-  bookingsGet
+  bookingsGet,
 );
 
 router.get(
   "/:id",
   [
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    validateRequestParams
+    validateRequestParams,
   ],
-  getBookingById
+  getBookingById,
 );
 
 router.put(
@@ -43,9 +43,9 @@ router.put(
       .optional()
       .isISO8601(),
     body("tp_status").isEmpty().withMessage("tp_status is not allowed"),
-    validateRequestParams
+    validateRequestParams,
   ],
-  putBooking
+  putBooking,
 );
 
 router.post(
@@ -54,13 +54,13 @@ router.post(
     validateJwt,
     body(
       "date_start",
-      "The field `date_start` is required and must be a valid date in format YYYY-MM-DD"
+      "The field `date_start` is required and must be a valid date in format YYYY-MM-DD",
     )
       .notEmpty()
       .isISO8601(),
     body(
       "date_end",
-      "The field `date_end` is required and must be a valid date in format YYYY-MM-DD"
+      "The field `date_end` is required and must be a valid date in format YYYY-MM-DD",
     )
       .notEmpty()
       .isISO8601(),
@@ -73,9 +73,9 @@ router.post(
     body("user", "The field `user` ID is required and must be a MongoID")
       .notEmpty()
       .isMongoId(),
-    validateRequestParams
+    validateRequestParams,
   ],
-  bookingPost
+  bookingPost,
 );
 
 router.delete(
@@ -83,9 +83,9 @@ router.delete(
   [
     validateJwt,
     param("id", "The ID must be a valid MongoID").isMongoId(),
-    validateRequestParams
+    validateRequestParams,
   ],
-  bookingDelete
+  bookingDelete,
 );
 
 export default router;

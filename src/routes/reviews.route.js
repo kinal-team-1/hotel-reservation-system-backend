@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
-import { isAdminLogged } from "../middleware/is-logged.js";
+import { isHotelAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 
 import {
@@ -40,7 +40,7 @@ router.put(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id").isMongoId(),
     body("comment")
       .optional()
@@ -113,7 +113,7 @@ router.delete(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],

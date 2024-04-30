@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
-import { isAdminLogged } from "../middleware/is-logged.js";
+import { isHotelAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
   hotelImagePost,
@@ -17,7 +17,7 @@ router.get(
   "/",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     query("hotel_id", "El hotel_id no es un ObjectId válido")
       .optional()
       .isMongoId(),
@@ -30,7 +30,7 @@ router.get(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
@@ -41,7 +41,7 @@ router.put(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
     body("is_main_image")
       .isBoolean()
@@ -57,7 +57,7 @@ router.post(
   "/",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     body("image_url", "La URL de la imagen es requerida").not().isEmpty(),
     body("hotel_id", "El ID del hotel es requerido").isMongoId(),
     body(
@@ -73,7 +73,7 @@ router.delete(
   "/:id",
   [
     validateJwt,
-    isAdminLogged,
+    isHotelAdminLogged,
     param("id", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
   ],
