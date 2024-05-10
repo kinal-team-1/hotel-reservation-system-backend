@@ -40,10 +40,10 @@ router.post(
   [
     //  validateJwt,
     //  isAdminLogged,
-    body("id", "El ID de la factura es requerido").notEmpty(),
-    body("price", "El precio de la factura es requerido").notEmpty(),
-    body("booking_id", "El ID de la reserva es requerido").notEmpty(),
-    body("user_id", "El ID de usuario es requerido").notEmpty(),
+    body("id", "Invoice ID is required").notEmpty(),
+    body("price", "Invoice price is required").notEmpty().isNumeric().toFloat(),
+    body("booking", "Booking ID is required").notEmpty().isMongoId(),
+    body("user", "User ID is required").notEmpty().isMongoId(),
     validateRequestParams,
   ],
   createInvoice,
@@ -55,20 +55,16 @@ router.put(
   [
     //  validateJwt,
     //  isAdminLogged,
-    body("price", "El precio es un campo que no puede estar vacio")
+    body("price", "Price must be a non-negative number")
       .optional()
-      .isLength({ min: 2 }),
-    body("tp_status", "El estado de la factura no es obligatorio")
+      .isFloat({ min: 0 }),
+    body("tp_status", "Invoice status must be at least 5 characters long")
       .optional()
       .isLength({ min: 5 }),
-    body(
-      "booking_id",
-      "El ID de la reserva es requerido en forma numerica ejemplo: 1=booking_id",
-    ).optional(),
-    body(
-      "user_id",
-      "El ID de usuario es necesria para buscarlo de forma mas presisa",
-    ).optional(),
+    body("booking", "Booking ID must be a valid MongoDB ID")
+      .optional()
+      .isMongoId(),
+    body("user", "User ID must be a valid MongoDB ID").optional().isMongoId(),
     validateRequestParams,
   ],
   updateInvoice,

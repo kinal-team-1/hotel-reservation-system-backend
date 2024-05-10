@@ -18,13 +18,14 @@ const invoiceSchema = new Schema({
   tp_status: {
     type: String,
     enum: ["ACTIVE", "INACTIVE"],
+    default: "ACTIVE",
     required: true,
   },
-  booking_id: {
+  booking: {
     type: Schema.Types.ObjectId,
     required: true,
   },
-  user_id: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,

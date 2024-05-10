@@ -1,69 +1,57 @@
-import invoiceModel from "../model/invoice.model.js";
-import { validationResult } from "express-validator";
+import InvoiceModel from "../model/invoice.model.js";
 import { response } from "express";
 
 // Obtener todas las facturas
 export const getInvoices = async (req, res = response) => {
-  try {
-    const invoices = await invoiceModel.find();
-    res.status(200).json({
-      invoices,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "Error al obtener las facturas",
-    });
-  }
+  const { limit, page } = req.query;
+  const query = { tp_status: "ACTIVE" };
+  const [total, invoices] = await Promise.all([
+    InvoiceModel.countDocuments(query),
+    InvoiceModel.find(query)
+      .skip(Number(page) * Number(limit))
+      .limit(Number(limit)),
+  ]);
+  res.status(200).json({
+    total,
+    invoices,
+  });
 };
 
 // Obtener una factura por su ID
 export const getInvoiceById = async (req, res = response) => {
   const { id } = req.params;
 
-  try {
-    const invoice = await invoiceModel.findById(id);
-    if (!invoice) {
-      return res.status(404).json({
-        error: "Factura no encontrada",
-      });
-    }
-    res.status(200).json({
-      invoice,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "Error al obtener la factura",
+  const invoice = await InvoiceModel.findById(id);
+  if (!invoice) {
+    return res.status(404).json({
+      error: "Invoice not found",
     });
   }
+
+  res.status(200).json({
+    invoice,
+  });
 };
 
 // Crear una nueva factura
 export const createInvoice = async (req, res = response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-
-  const { id, price, booking_id, user_id } = req.body;
+  const { id, price, booking, user } = req.body;
 
   try {
-    const newInvoice = new invoiceModel({
+    const newInvoice = new InvoiceModel({
       id,
       price,
-      tp_status: "ACTIVE",
-      booking_id,
-      user_id,
+      booking,
+      user,
     });
     await newInvoice.save();
     res.status(201).json({
-      message: "Factura creada correctamente",
+      message: "Invoice created correctly",
       invoice: newInvoice,
     });
   } catch (error) {
     res.status(500).json({
-      error: "Error al crear la factura",
+      error: "Error creating invoice",
     });
   }
 };
@@ -71,32 +59,31 @@ export const createInvoice = async (req, res = response) => {
 // Actualizar una factura por su ID
 export const updateInvoice = async (req, res = response) => {
   const { id } = req.params;
-  const { price, tp_status, booking_id, user_id } = req.body;
+  const { price, booking, user } = req.body;
 
   try {
-    const updatedInvoice = await invoiceModel.findByIdAndUpdate(
+    const updatedInvoice = await InvoiceModel.findByIdAndUpdate(
       id,
       {
         price,
-        tp_status,
-        booking_id,
-        user_id,
+        booking,
+        user,
         updated_at: new Date(),
       },
       { new: true },
     );
     if (!updatedInvoice) {
       return res.status(404).json({
-        error: "Factura no encontrada",
+        error: "Invoice not found",
       });
     }
     res.status(200).json({
-      message: "Factura actualizada correctamente",
+      message: "Invoice updated correctly",
       invoice: updatedInvoice,
     });
   } catch (error) {
     res.status(500).json({
-      error: "Error al actualizar la factura",
+      error: "Error updating invoice",
     });
   }
 };
@@ -105,20 +92,28 @@ export const updateInvoice = async (req, res = response) => {
 export const deleteInvoice = async (req, res = response) => {
   const { id } = req.params;
 
-  try {
-    const deletedInvoice = await invoiceModel.findByIdAndDelete(id);
-    if (!deletedInvoice) {
-      return res.status(404).json({
-        error: "Factura no encontrada",
-      });
-    }
-    res.status(200).json({
-      message: "Factura eliminada correctamente",
-      invoice: deletedInvoice,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "Error al eliminar la factura",
+  const invoice = await InvoiceModel.findById(id);
+  if (!invoice) {
+    return res.status(404).json({
+      error: "Invoice not found",
     });
   }
+
+  const { tp_status } = req.body;
+  if (tp_status) {
+    return res.status(400).json({
+      error: "tp_status cannot be passed in the request body",
+    });
+  }
+
+  const updatedInvoice = await InvoiceModel.findByIdAndUpdate(
+    id,
+    { tp_status: "INACTIVE" },
+    { new: true },
+  );
+
+  res.status(200).json({
+    message: "Invoice successfully updated",
+    invoice: updatedInvoice,
+  });
 };
