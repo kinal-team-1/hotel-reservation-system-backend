@@ -2,12 +2,15 @@ import serviceModel from "../model/services.model.js";
 import { response } from "express";
 
 export const servicesGet = async (req, res = response) => {
-  const { limite, desde } = req.query;
+  const { limit, page } = req.query;
   const query = { tp_status: "ACTIVE" };
 
   const [total, services] = await Promise.all([
     serviceModel.countDocuments(query),
-    serviceModel.find(query).skip(Number(desde)).limit(Number(limite)),
+    serviceModel
+      .find(query)
+      .skip(Number(page) * Number(limit))
+      .limit(Number(limit)),
   ]);
 
   res.status(200).json({
@@ -21,7 +24,7 @@ export const getServiceById = async (req, res) => {
   const service = await serviceModel.findById({ _id: id });
   if (!service) {
     return res.status(404).json({
-      msg: "Servicio no encontrado",
+      msg: "Service not found",
     });
   }
 
@@ -32,15 +35,14 @@ export const getServiceById = async (req, res) => {
 
 export const putService = async (req, res = response) => {
   const { id } = req.params;
-  const { name, description, tp_status, duration, price, hotel_id } = req.body;
+  const { name, description, duration, price, hotel } = req.body;
 
   const serviceToUpdate = {
     name,
     description,
-    tp_status,
     duration,
     price,
-    hotel_id,
+    hotel,
     updated_at: new Date(),
   };
 
@@ -52,7 +54,7 @@ export const putService = async (req, res = response) => {
 
   if (!updatedService) {
     return res.status(404).json({
-      msg: "Servicio no encontrado",
+      msg: "Service not found",
     });
   }
 
@@ -73,25 +75,24 @@ export const serviceDelete = async (req, res) => {
 
   if (!service) {
     return res.status(404).json({
-      msg: "Servicio no encontrado",
+      msg: "Service not found",
     });
   }
 
   res.status(200).json({
-    msg: "Servicio eliminado exitosamente",
+    msg: "Service successfully removed",
     service,
   });
 };
 
 export const servicePost = async (req, res) => {
-  const { name, description, tp_status, duration, price, hotel_id } = req.body;
+  const { name, description, duration, price, hotel } = req.body;
   const service = new serviceModel({
     name,
     description,
-    tp_status,
     duration,
     price,
-    hotel_id,
+    hotel,
   });
 
   await service.save();

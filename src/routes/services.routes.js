@@ -16,11 +16,11 @@ const router = Router();
 router.get(
   "/",
   [
-    query("limite")
+    query("limit")
       .optional()
       .isNumeric()
       .withMessage("El límite debe ser un valor numérico"),
-    query("desde")
+    query("page")
       .optional()
       .isNumeric()
       .withMessage("El valor desde debe ser numérico"),
@@ -50,7 +50,7 @@ router.put(
     body("description", "La descripción no puede estar vacía")
       .optional()
       .isLength({ min: 10 }),
-    body("duration", "La duración es obligatoria").optional().isISO8601(),
+    body("duration", "La duración es obligatoria").optional().isInt({ min: 1 }),
     body("price", "El precio debe ser un número válido").optional().isFloat(),
     validateRequestParams,
   ],
@@ -66,7 +66,7 @@ router.post(
     body("description", "La descripción no puede estar vacía").isLength({
       min: 10,
     }),
-    body("duration", "La duración es obligatoria").isISO8601(),
+    body("duration", "La duración es obligatoria").isInt({ min: 1 }),
     body("price", "El precio debe ser un número válido").isFloat(),
     validateRequestParams,
   ],
