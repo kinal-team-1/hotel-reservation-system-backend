@@ -1,11 +1,11 @@
 import { Schema, model } from "mongoose";
 
 const servicesAcquiredSchema = new Schema({
-  transaction_id: {
+  transaction: {
     type: String, // o Schema.Types.ObjectId según tu necesidad
     required: [true, "El ID de la transacción es requerido"],
   },
-  services_id: {
+  services: {
     type: Schema.Types.ObjectId,
     required: [true, "El ID del servicio es requerido"],
   },

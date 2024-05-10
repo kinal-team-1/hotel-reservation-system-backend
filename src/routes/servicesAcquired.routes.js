@@ -3,7 +3,7 @@ import { body, param, query } from "express-validator";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
 import {
   getServicesAcquired,
-  getServicesAcquiredById,
+  getServicesByHotelID,
   createServicesAcquired,
   updateServicesAcquired,
   deleteServicesAcquired,
@@ -33,14 +33,14 @@ router.get(
     param("id").isMongoId().withMessage("El ID debe ser un número"),
     validateRequestParams,
   ],
-  getServicesAcquiredById,
+  getServicesByHotelID,
 );
 
 router.post(
   "/",
   [
-    body("transaction_id", "El ID de transacción es requerido").notEmpty(),
-    body("services_id", "El ID de servicios es requerido").notEmpty(),
+    body("transaction", "El ID de transacción es requerido").notEmpty(),
+    body("services", "El ID de servicios es requerido").notEmpty(),
     body("quantity", "La cantidad es requerida").notEmpty(),
     body("date_acquired", "La fecha de adquisición es requerida").notEmpty(),
     body("date_start", "La fecha de inicio es requerida").notEmpty(),
@@ -55,8 +55,8 @@ router.put(
   "/:id",
   [
     param("id").isMongoId().withMessage("El ID debe ser un número"),
-    body("transaction_id", "El ID de transacción es requerido").optional(),
-    body("services_id", "Se necesita el id de un servicio activo").optional(),
+    body("transaction", "El ID de transacción es requerido").optional(),
+    body("services", "Se necesita el id de un servicio activo").optional(),
     body("quantity", "La cantidad es requerida").optional(),
     body("date_acquired", "La fecha de adquisición es requerida").notEmpty(),
     body("date_start", "La fecha de inicio es requerida").notEmpty(),
