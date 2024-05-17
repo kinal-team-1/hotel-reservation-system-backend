@@ -32,6 +32,23 @@ export const getRoomById = async (req, res) => {
   });
 };
 
+
+export const getRoomByHotelId = async (req, res) => {
+  const { hotelId } = req.params;
+  const room = await RoomModel.findById({ hotel: hotelId });
+  if (!room) {
+    return res.status(404).json({
+      msg: "Room not found",
+    });
+  }
+
+  res.status(200).json({
+    room,
+  });
+};
+
+
+
 export const putRoom = async (req, res = response) => {
   const { id } = req.params;
   const { description, people_capacity, night_price, room_type } = req.body;

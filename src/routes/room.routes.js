@@ -7,6 +7,7 @@ import { validateRequestParams } from "../middleware/validate-request-params.js"
 import {
   roomsGet,
   getRoomById,
+  getRoomByHotelId,
   putRoom,
   roomDelete,
   roomPost,
@@ -32,6 +33,11 @@ router.get(
   ],
   getRoomById,
 );
+
+router.get("/by-hotel/:hotelId", [
+    param("hotelId", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams,
+], getRoomByHotelId)
 
 router.put(
   "/:id",

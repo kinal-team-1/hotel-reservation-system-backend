@@ -34,6 +34,10 @@ const roomSchema = new Schema({
     enum: ["ACTIVE", "INACTIVE"],
     default: "ACTIVE",
   },
+  hotel: {
+    ref: "Hotel",
+    type: Schema.Types.ObjectId,
+  },
 });
 
 const roomModel = model("Room", roomSchema);
