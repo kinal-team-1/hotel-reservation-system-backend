@@ -8,6 +8,7 @@ import authRoutes from "./src/routes/auth.routes.js";
 import hotelRoutes from "./src/routes/hoteles.routes.js";
 import hotelImgRoutes from "./src/routes/hotelImg.routes.js";
 import bookingRoutes from "./src/routes/booking.routes.js";
+import roomsRoutes from "./src/routes/room.routes.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/hotel", hotelRoutes);
 app.use("/api/hotelImg", hotelImgRoutes);
 app.use("/api/booking", bookingRoutes);
+app.use("/api/room", roomsRoutes)
 
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Not found" });

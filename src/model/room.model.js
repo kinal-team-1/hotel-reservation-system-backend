@@ -32,6 +32,7 @@ const roomSchema = new Schema({
     type: String,
     required: [true, "El estado del hotel es requerido"],
     enum: ["ACTIVE", "INACTIVE"],
+    default: "ACTIVE",
   },
 });
 
