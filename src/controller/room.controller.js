@@ -23,35 +23,42 @@ export const roomsGet = async (req, res = response) => {
 
 
 export const getFeed = async (req, res) => {
-  const rooms = await RoomModel.find();
+  const rooms = await RoomModel.find({ tp_status: 'ACTIVE' }).select('-tp_status');
 
-  const hotels = [...new Set(...rooms.map(room => room.hotel))];
+  const hotels = [...new Set(rooms.map(room => room.hotel))];
 
   const hotelsWithRating = await Promise.allSettled(hotels.map(async (hotelId) => {
-    const reviews = await Review.find({ hotel_id: hotelId })
+    const reviews = await Review.find({ hotel_id: hotelId }).select("rating_cleanliness rating_staff rating_facilities")
     const average = reviews.reduce((acc, { rating_cleanliness, rating_staff, rating_facilities }) => {
       return acc + rating_cleanliness + rating_staff + rating_facilities
     }, 0) / (reviews.length * 3)
 
     return {
       hotelId,
-      average,
+      average: average || 0,
+      quantity_people_rated: reviews.length,
     }
   }));
 
-  const mapHotels = hotelsWithRating.reduce((map, hotel) => {
-    map[hotel.hotelId] = hotel;
+  const hotelRatingsMap = hotelsWithRating.reduce((map, hotel) => {
+    map[hotel.value.hotelId] = hotel.value;
     return map;
   }, {})
 
-  rooms.map(async (room) => {
-    const roomImage = await RoomImage.find({ room_id: room._id, is_main_image: true });
-    return { ...room, rating: mapHotels[room.hotel], img: roomImage }
-  })
+  const roomsWithRatingAndImgs = await Promise.allSettled(rooms.map(async (room) => {
+    const [roomImage] = await RoomImage.find({ room_id: room._id, is_main_image: true }).select("image_url");
+
+    return { 
+      ...room.toObject(),
+      rating: hotelRatingsMap[room.hotel].average,
+      img: roomImage?.image_url || "",
+      quantity_people_rated: hotelRatingsMap[room.hotel].quantity_people_rated,
+    }
+  }))
 
   res.status(200).json({
     total: rooms.length,
-    rooms,
+    rooms: roomsWithRatingAndImgs.map(({ value }) => value),
   })
 }
 
@@ -144,12 +151,13 @@ export const roomDelete = async (req, res) => {
 };
 
 export const roomPost = async (req, res) => {
-  const { description, people_capacity, night_price, room_type } = req.body;
+  const { description, people_capacity, night_price, room_type, hotel } = req.body;
   const room = new RoomModel({
     description,
     people_capacity,
     night_price,
     room_type,
+    hotel,
   });
 
   await room.save();

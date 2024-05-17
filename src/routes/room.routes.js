@@ -89,6 +89,7 @@ router.post(
       "The field `night_price` is required and must be a number",
     ).isNumeric(),
     body("room_type", "The field `room_type` is required").notEmpty(),
+    body("hotel", "The field `hotel` is required and must be mongo ID").isMongoId(),
     validateRequestParams,
   ],
   roomPost,
