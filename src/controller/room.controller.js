@@ -39,7 +39,7 @@ export const getFeed = async (req, res) => {
     }
   }));
 
-  const mapHotels = hotelsWithRating.value.reduce((map, hotel) => {
+  const mapHotels = hotelsWithRating.reduce((map, hotel) => {
     map[hotel.hotelId] = hotel;
     return map;
   }, {})
