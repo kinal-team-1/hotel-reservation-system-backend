@@ -1,5 +1,7 @@
-import RoomModel from "../model/room.model.js";
 import { response } from "express";
+import RoomModel from "../model/room.model.js";
+import Review from "../model/reviews.model.js";
+import RoomImage from '../model/roomImg.model.js';
 
 export const roomsGet = async (req, res = response) => {
   const { limit, page } = req.query;
@@ -8,6 +10,7 @@ export const roomsGet = async (req, res = response) => {
   const [total, rooms] = await Promise.all([
     RoomModel.countDocuments(query),
     RoomModel.find(query)
+      .populate("hotel")
       .skip(Number(page) * Number(limit))
       .limit(Number(limit)),
   ]);
@@ -17,6 +20,42 @@ export const roomsGet = async (req, res = response) => {
     rooms,
   });
 };
+
+
+export const getFeed = async (req, res) => {
+  const rooms = await RoomModel.find();
+
+  const hotels = [...new Set(...rooms.map(room => room.hotel))];
+
+  const hotelsWithRating = await Promise.allSettled(hotels.map(async (hotelId) => {
+    const reviews = await Review.find({ hotel_id: hotelId })
+    const average = reviews.reduce((acc, { rating_cleanliness, rating_staff, rating_facilities }) => {
+      return acc + rating_cleanliness + rating_staff + rating_facilities
+    }, 0) / (reviews.length * 3)
+
+    return {
+      hotelId,
+      average,
+    }
+  }));
+
+  const mapHotels = hotelsWithRating.value.reduce((map, hotel) => {
+    map[hotel.hotelId] = hotel;
+    return map;
+  }, {})
+
+  rooms.map(async (room) => {
+    const roomImage = await RoomImage.find({ room_id: room._id, is_main_image: true });
+    return { ...room, rating: mapHotels[room.hotel], img: roomImage }
+  })
+
+  res.status(200).json({
+    total: rooms.length,
+    rooms,
+  })
+}
+
+
 
 export const getRoomById = async (req, res) => {
   const { id } = req.params;
@@ -35,15 +74,15 @@ export const getRoomById = async (req, res) => {
 
 export const getRoomByHotelId = async (req, res) => {
   const { hotelId } = req.params;
-  const room = await RoomModel.findById({ hotel: hotelId });
-  if (!room) {
+  const rooms = await RoomModel.findById({ hotel: hotelId });
+  if (!rooms) {
     return res.status(404).json({
       msg: "Room not found",
     });
   }
 
   res.status(200).json({
-    room,
+    rooms,
   });
 };
 
