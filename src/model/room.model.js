@@ -38,6 +38,10 @@ const roomSchema = new Schema({
     ref: "Hotel",
     type: Schema.Types.ObjectId,
   },
+  images: [{
+    type: Schema.Types.ObjectId,
+    ref: "RoomImage",
+  }],
 });
 
 const roomModel = model("Room", roomSchema);
