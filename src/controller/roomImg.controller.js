@@ -20,7 +20,7 @@ export const roomImagePost = async (req, res) => {
 
     await Room.findByIdAndUpdate(
       room_id,
-        { $push: { reviews: newImage._id } },
+        { $push: { images: newImage._id } },
         { new: true },
       )
 
