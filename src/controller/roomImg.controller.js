@@ -5,7 +5,7 @@ import { response } from "express";
 export const roomImagesGet = async (req, res = response) => {
   try {
     const { room_id } = req.query;
-    const images = await RoomImage.find({ room_id });
+    const images = await RoomImage.find({ ...(room_id && { room_id }) });
     res.status(200).json({ images });
   } catch (error) {
     console.error("Error al obtener las imágenes de la habitación:", error);
