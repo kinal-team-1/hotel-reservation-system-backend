@@ -1,4 +1,5 @@
 import Review from "../model/reviews.model.js";
+import Hotel from "../model/hoteles.model.js"
 import { response } from "express";
 
 export const reviewsGet = async (req, res = response) => {
@@ -93,7 +94,16 @@ export const reviewPost = async (req, res) => {
     is_customer,
   });
 
-  await review.save();
+  const newReview = await review.save();
+
+
+  await Hotel.findByIdAndUpdate(
+    hotel_id,
+    { $push: { reviews: newReview._id } },
+    { new: true },
+  )
+
+
   res.status(201).json({
     review,
   });
@@ -111,6 +121,14 @@ export const reviewDelete = async (req, res) => {
       msg: "Review not found",
     });
   }
+
+
+  await Hotel.findByIdAndUpdate(
+    review.hotel_id,
+    { $pullAll: { reviews: [review._id]} },
+    { new: true },
+  )
+
 
   res.status(200).json({
     msg: "Review successfully deleted",

@@ -32,6 +32,10 @@ const hotelSchema = new Schema({
     enum: ["ACTIVE", "INACTIVE"],
     default: "ACTIVE",
   },
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: "Review",
+  }],
 });
 
 const hotelModel = model("Hotel", hotelSchema);

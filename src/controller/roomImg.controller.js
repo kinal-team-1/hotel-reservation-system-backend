@@ -1,3 +1,4 @@
+import Room from "../model/room.model.js"
 import RoomImage from "../model/roomImg.model.js";
 import { response } from "express";
 
@@ -15,7 +16,14 @@ export const roomImagePost = async (req, res) => {
   try {
     const { image_url, room_id, is_main_image } = req.body;
     const image = new RoomImage({ image_url, room_id, is_main_image });
-    await image.save();
+    const newImage = await image.save();
+
+    await Room.findByIdAndUpdate(
+      room_id,
+        { $push: { reviews: newImage._id } },
+        { new: true },
+      )
+
     res.status(201).json({ image });
   } catch (error) {
     console.error("Error al crear la imagen:", error);
@@ -55,6 +63,13 @@ export const roomImageDelete = async (req, res) => {
     if (!deletedImage) {
       return res.status(404).json({ message: "Imagen no encontrada" });
     }
+
+    await Room.findByIdAndUpdate(
+      deletedImage.room_id,
+      { $pullAll: { images: [deletedImage._id]} },
+      { new: true },
+    )
+
     res.status(200).json({ deletedImage });
   } catch (error) {
     console.error("Error al eliminar la imagen:", error);
