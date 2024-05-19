@@ -45,10 +45,12 @@ const UserSchema = new Schema({
     required: true,
     default: "ACTIVE",
   },
-  bookings: [{
-    type: Schema.Types.ObjectId,
-    ref: "Booking",
-  }],
+  bookings: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Booking",
+    },
+  ],
 });
 
 // Índice en el campo de correo electrónico

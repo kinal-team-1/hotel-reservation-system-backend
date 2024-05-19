@@ -47,12 +47,11 @@ export const signup = async (req, res) => {
   }
 };
 
-
 export const validateToken = async (req, res) => {
-  // the validation will be done by the middleware, here we are 
+  // the validation will be done by the middleware, here we are
   // just gonna handle the success case
   return res.status(200).json({
     message: "User is authorized",
     data: req.loggedUser,
-  })
-}
+  });
+};

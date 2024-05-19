@@ -1,4 +1,4 @@
-import Room from "../model/room.model.js"
+import Room from "../model/room.model.js";
 import RoomImage from "../model/roomImg.model.js";
 import { response } from "express";
 
@@ -20,9 +20,9 @@ export const roomImagePost = async (req, res) => {
 
     await Room.findByIdAndUpdate(
       room_id,
-        { $push: { images: newImage._id } },
-        { new: true },
-      )
+      { $push: { images: newImage._id } },
+      { new: true },
+    );
 
     res.status(201).json({ image });
   } catch (error) {
@@ -68,7 +68,7 @@ export const roomImageDelete = async (req, res) => {
       deletedImage.room_id,
       { $pullAll: { images: [deletedImage._id]} },
       { new: true },
-    )
+    );
 
     res.status(200).json({ deletedImage });
   } catch (error) {

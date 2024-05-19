@@ -34,10 +34,14 @@ router.get(
   getRoomById,
 );
 
-router.get("/by-hotel/:hotelId", [
+router.get(
+  "/by-hotel/:hotelId",
+  [
     param("hotelId", "The ID must be a valid MongoID").isMongoId(),
     validateRequestParams,
-], getRoomByHotelId)
+  ],
+  getRoomByHotelId,
+);
 
 router.put(
   "/:id",
@@ -89,7 +93,10 @@ router.post(
       "The field `night_price` is required and must be a number",
     ).isNumeric(),
     body("room_type", "The field `room_type` is required").notEmpty(),
-    body("hotel", "The field `hotel` is required and must be mongo ID").isMongoId(),
+    body(
+      "hotel",
+      "The field `hotel` is required and must be mongo ID",
+    ).isMongoId(),
     validateRequestParams,
   ],
   roomPost,

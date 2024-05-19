@@ -33,14 +33,15 @@ export const getBookingById = async (req, res) => {
   });
 };
 
-
 export const getBookingsByRoom = async (req, res) => {
   const { roomId } = req.params;
-  const bookings = await BookingModel.find({ room: roomId }).populate("user room");
+  const bookings = await BookingModel.find({ room: roomId }).populate(
+    "user room",
+  );
 
   res.status(200).json({
     bookings,
-  })
+  });
 };
 
 export const getBookingsByUser = async (req, res) => {
@@ -51,9 +52,8 @@ export const getBookingsByUser = async (req, res) => {
 
   res.status(200).json({
     bookings,
-  })
-}
-
+  });
+};
 
 export const putBooking = async (req, res = response) => {
   const { id } = req.params;
@@ -121,15 +121,13 @@ export const bookingDelete = async (req, res) => {
     booking.user,
     { $pullAll: { bookings: [booking._id]} },
     { new: true },
-  )
+  );
 
   await Room.findByIdAndUpdate(
     booking.room,
     { $pullAll: { bookings: [booking._id]} },
     { new: true },
-  )
-
-
+  );
 
   res.status(200).json({
     msg: "Reservation successfully deleted",
@@ -160,13 +158,13 @@ export const bookingPost = async (req, res) => {
       user,
       { $push: { bookings: booking._id } },
       { new: true },
-    )
+    );
 
     await Room.findByIdAndUpdate(
       room,
       { $push: { bookings: booking._id } },
       { new: true },
-    )
+    );
 
     res.status(201).json({
       booking,

@@ -1,5 +1,6 @@
 import Review from "../model/reviews.model.js";
-import Hotel from "../model/hoteles.model.js"
+import Hotel from "../model/hoteles.model.js";
+import Booking from "../model/booking.model.js";
 import { response } from "express";
 
 export const reviewsGet = async (req, res = response) => {
@@ -81,8 +82,15 @@ export const reviewPost = async (req, res) => {
     rating_facilities,
     user_id,
     hotel_id,
-    is_customer,
   } = req.body;
+
+  const booking = await Booking.findOne({
+    user: user_id,
+    hotel: hotel_id,
+    tp_status: "ACTIVE",
+  });
+
+  const is_customer = Boolean(booking);
 
   const review = new Review({
     comment,
@@ -96,13 +104,11 @@ export const reviewPost = async (req, res) => {
 
   const newReview = await review.save();
 
-
   await Hotel.findByIdAndUpdate(
     hotel_id,
     { $push: { reviews: newReview._id } },
     { new: true },
-  )
-
+  );
 
   res.status(201).json({
     review,
@@ -122,13 +128,11 @@ export const reviewDelete = async (req, res) => {
     });
   }
 
-
   await Hotel.findByIdAndUpdate(
     review.hotel_id,
     { $pullAll: { reviews: [review._id]} },
     { new: true },
-  )
-
+  );
 
   res.status(200).json({
     msg: "Review successfully deleted",

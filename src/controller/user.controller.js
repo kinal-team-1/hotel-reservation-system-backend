@@ -38,9 +38,9 @@ export const createUser = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   const { id } = req.params;
-  const user = await UserModel.findOne({ _id: id, tp_status: "ACTIVE" }).select(
-    "name lastname email role bookings",
-  ).populate("bookings");
+  const user = await UserModel.findOne({ _id: id, tp_status: "ACTIVE" })
+    .select("name lastname email role bookings")
+    .populate("bookings");
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });

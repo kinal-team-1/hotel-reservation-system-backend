@@ -96,8 +96,8 @@ router.post(
     // The field `field` is required and must be <TYPE>
     body(
       "is_customer",
-      "The field `is_customer` is required and must be a boolean",
-    ).isBoolean(),
+      "The field `is_customer` should not be provided by the frontend but validated in the backend",
+    ).isEmpty(),
     body("user_id", "The field `user_id` is required and must be a MongoID")
       .notEmpty()
       .isMongoId(),

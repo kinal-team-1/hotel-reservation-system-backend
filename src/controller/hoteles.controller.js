@@ -1,5 +1,5 @@
 import HotelModel from "../model/hoteles.model.js";
-import HotelImg from "../model/hotelImg.model.js"
+import HotelImg from "../model/hotelImg.model.js";
 import { response } from "express";
 
 export const hotelsGet = async (req, res = response) => {
@@ -26,8 +26,7 @@ export const getHotelById = async (req, res) => {
     });
   }
 
-  const imgs = await HotelImg.find({ hotel_id: id })
-
+  const imgs = await HotelImg.find({ hotel_id: id });
 
   res.status(200).json({
     ...hotel.toObject(),

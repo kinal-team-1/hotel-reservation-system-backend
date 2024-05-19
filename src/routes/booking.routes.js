@@ -27,27 +27,30 @@ router.get(
 );
 
 router.get(
-  '/by-user/userId',
+  "/by-user/userId",
   [
-    param("userId", "The ID must be a valid MongoID").isMongoId().custom(async (value) => {
-      const user = await User.findById(value);
-      if (!user) throw new Error("User not found")
-    }),
+    param("userId", "The ID must be a valid MongoID")
+      .isMongoId()
+      .custom(async (value) => {
+        const user = await User.findById(value);
+        if (!user) throw new Error("User not found");
+      }),
   ],
   getBookingsByUser,
 );
 
 router.get(
-  '/by-room/roomId',
+  "/by-room/roomId",
   [
-    param("roomId").isMongoId().custom(async (value) => {
-      const room = await Room.findById(value);
-      if (!room) throw new Error("Room not found");
-    }),
+    param("roomId")
+      .isMongoId()
+      .custom(async (value) => {
+        const room = await Room.findById(value);
+        if (!room) throw new Error("Room not found");
+      }),
   ],
   getBookingsByRoom,
-)
-
+);
 
 router.get(
   "/:id",
