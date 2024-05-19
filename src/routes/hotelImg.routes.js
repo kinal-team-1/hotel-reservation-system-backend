@@ -1,3 +1,4 @@
+import Hotel from "../model/hoteles.model.js";
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
@@ -9,6 +10,7 @@ import {
   getHotelImageById,
   hotelImageDelete,
   changeMainImage,
+  getHotelImageByHotel,
 } from "../controller/hotelImg.controller.js";
 
 const router = Router();
@@ -35,6 +37,22 @@ router.get(
     validateRequestParams,
   ],
   getHotelImageById,
+);
+
+router.get(
+  "/by-hotel/:hotelId",
+  [
+    validateJwt,
+    isHotelAdminLogged,
+    param("hotelId", "The ID must be a valid MongoID")
+    .isMongoId()
+    .custom(async (value) => {
+      const hotel = await Hotel.findById(value);
+      if (!hotel) throw new Error("Hotel not found")
+    }),
+    validateRequestParams,
+  ],
+  getHotelImageByHotel,
 );
 
 router.put(

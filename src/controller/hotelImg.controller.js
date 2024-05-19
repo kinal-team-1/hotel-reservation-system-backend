@@ -4,7 +4,7 @@ import { response } from "express";
 export const hotelImagesGet = async (req, res = response) => {
   try {
     const { hotel_id } = req.query;
-    const images = await HotelImg.find({ hotel_id });
+    const images = await HotelImg.find({ ...(hotel_id ? { hotel_id } : null) });
     res.status(200).json({ images });
   } catch (error) {
     console.error("Error al obtener las imágenes del hotel:", error);
@@ -22,6 +22,17 @@ export const getHotelImageById = async (req, res = response) => {
     res.status(200).json({ image });
   } catch (error) {
     console.error("Error al obtener la imagen por ID:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+export const getHotelImageByHotel = async (req, res = response) => {
+  try {
+    const { hotelId } = req.params;
+    const images = await HotelImg.find({ hotel_id: hotelId });
+    res.status(200).json({ images });
+  } catch (error) {
+    console.error("Error al obtener la imagen por hotel ID:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
