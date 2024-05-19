@@ -28,6 +28,8 @@ export const getFeed = async (req, res) => {
     "-tp_status",
   );
   const favHotels = new Set((await FavoriteHotels.find({ user })).map(({ hotel }) => hotel));
+  console.log("favHotels");
+  console.log({ favHotels })
 
 
   const hotels = [...new Set(rooms.map((room) => room.hotel))];
