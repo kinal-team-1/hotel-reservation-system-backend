@@ -2,6 +2,7 @@ import { response } from "express";
 import RoomModel from "../model/room.model.js";
 import Review from "../model/reviews.model.js";
 import RoomImage from "../model/roomImg.model.js";
+import FavoriteHotels from "../model/favoriteHoteles.model.js";
 
 export const roomsGet = async (req, res = response) => {
   const { limit, page } = req.query;
@@ -22,9 +23,12 @@ export const roomsGet = async (req, res = response) => {
 };
 
 export const getFeed = async (req, res) => {
+  const user = req.loggedUser._id;
   const rooms = await RoomModel.find({ tp_status: "ACTIVE" }).select(
     "-tp_status",
   );
+  const favHotels = new Set((await FavoriteHotels.find({ user })).map(({ hotel }) => hotel));
+
 
   const hotels = [...new Set(rooms.map((room) => room.hotel))];
 
@@ -46,6 +50,7 @@ export const getFeed = async (req, res) => {
         hotelId,
         average: average || 0,
         quantity_people_rated: reviews.length,
+        fav: favHotels.has(hotelId),
       };
     }),
   );
@@ -62,12 +67,15 @@ export const getFeed = async (req, res) => {
         is_main_image: true,
       }).select("image_url");
 
+      const hotel = hotelRatingsMap[room.hotel];
+
       return {
         ...room.toObject(),
-        rating: hotelRatingsMap[room.hotel].average,
+        rating: hotel.average,
         img: roomImage?.image_url || "",
         quantity_people_rated:
-          hotelRatingsMap[room.hotel].quantity_people_rated,
+          hotel.quantity_people_rated,
+        favorite: hotel.fav,
       };
     }),
   );

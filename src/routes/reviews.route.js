@@ -1,3 +1,5 @@
+import User from "../model/user.model.js";
+import Hotel from "../model/hoteles.model.js";
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
@@ -68,8 +70,22 @@ router.put(
       .optional()
       .isBoolean()
       .withMessage("If `is_customer` provided, it must be a boolean value"),
-    body("user_id").optional().notEmpty().withMessage("User ID is required"),
-    body("hotel_id").optional().notEmpty().withMessage("Hotel ID is required"),
+    body("user_id")
+      .optional()
+      .isMongoId()
+      .withMessage("If `user_id` is provided, it must be a MongoID")
+      .custom(async (value) => {
+        const user = await User.findById(value);
+        if (!user) throw new Error("User not found");
+      }),
+    body("hotel_id")
+      .optional()
+      .isMongoId()
+      .withMessage("If `user_id` is provided, it must be a MongoID")
+      .custom(async (value) => {
+        const hotel = await Hotel.findById(value);
+        if (!hotel) throw new Error("Hotel not found");
+      }),
 
     validateRequestParams,
   ],
@@ -93,17 +109,24 @@ router.post(
       "rating_facilities",
       "The field `rating_facilities` is required and must be an int",
     ).isInt(),
-    // The field `field` is required and must be <TYPE>
     body(
       "is_customer",
       "The field `is_customer` should not be provided by the frontend but validated in the backend",
     ).isEmpty(),
     body("user_id", "The field `user_id` is required and must be a MongoID")
       .notEmpty()
-      .isMongoId(),
+      .isMongoId()
+      .custom(async (value) => {
+        const user = await User.findById(value);
+        if (!user) throw new Error("User not found");
+      }),
     body("hotel_id", "The field `hotel_id` is required and must be a MongoID")
       .notEmpty()
-      .isMongoId(),
+      .isMongoId()
+      .custom(async (value) => {
+        const hotel = await Hotel.findById(value);
+        if (!hotel) throw new Error("Hotel not found");
+      }),
     validateRequestParams,
   ],
   reviewPost,

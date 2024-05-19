@@ -35,20 +35,13 @@ export const getReviewById = async (req, res) => {
 
 export const putReview = async (req, res = response) => {
   const { id } = req.params; // Extraemos el id de los parámetros de la solicitud
-  const {
-    comment,
-    rating_cleanliness,
-    rating_staff,
-    rating_facilities,
-    is_customer,
-  } = req.body;
+  const { comment, rating_cleanliness, rating_staff, rating_facilities } = req.body;
 
   const reviewToUpdate = {
     comment,
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    is_customer,
     updated_at: new Date(),
   };
 
