@@ -117,17 +117,18 @@ export const bookingDelete = async (req, res) => {
     });
   }
 
-  await User.findByIdAndUpdate(
-    booking.user,
-    { $pullAll: { bookings: [booking._id]} },
-    { new: true },
-  );
-
-  await Room.findByIdAndUpdate(
-    booking.room,
-    { $pullAll: { bookings: [booking._id]} },
-    { new: true },
-  );
+  await Promise.all([
+    User.findByIdAndUpdate(
+      booking.user,
+      { $pullAll: { bookings: [booking._id]} },
+      { new: true },
+    ),
+    Room.findByIdAndUpdate(
+      booking.room,
+      { $pullAll: { bookings: [booking._id]} },
+      { new: true },
+    ),
+  ]);
 
   res.status(200).json({
     msg: "Reservation successfully deleted",
@@ -152,19 +153,22 @@ export const bookingPost = async (req, res) => {
       });
     }
 
+    const [, objRoom] = await Promise.all([
+      User.findByIdAndUpdate(
+        user,
+        { $push: { bookings: booking._id } },
+        { new: true },
+      ),
+      Room.findByIdAndUpdate(
+        room,
+        { $push: { bookings: booking._id } },
+        { new: true },
+      ),
+    ]);
+
+    booking.hotel = objRoom.hotel;
+
     await booking.save();
-
-    await User.findByIdAndUpdate(
-      user,
-      { $push: { bookings: booking._id } },
-      { new: true },
-    );
-
-    await Room.findByIdAndUpdate(
-      room,
-      { $push: { bookings: booking._id } },
-      { new: true },
-    );
 
     res.status(201).json({
       booking,

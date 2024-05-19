@@ -34,6 +34,11 @@ const bookingSchema = new Schema({
     ref: "User",
     required: [true, "The `user` ID is required"],
   },
+  hotel: {
+    type: Schema.Types.ObjectId,
+    ref: "Hotel",
+    required: true,
+  },
 });
 
 const bookingModel = model("Booking", bookingSchema);
