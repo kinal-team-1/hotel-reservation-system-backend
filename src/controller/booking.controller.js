@@ -1,4 +1,6 @@
 import BookingModel from "../model/booking.model.js";
+import User from "../model/user.model.js";
+import Room from "../model/room.model.js";
 import { response } from "express";
 
 export const bookingsGet = async (req, res = response) => {
@@ -30,6 +32,28 @@ export const getBookingById = async (req, res) => {
     booking,
   });
 };
+
+
+export const getBookingsByRoom = async (req, res) => {
+  const { roomId } = req.params;
+  const bookings = await BookingModel.find({ room: roomId }).populate("user room");
+
+  res.status(200).json({
+    bookings,
+  })
+};
+
+export const getBookingsByUser = async (req, res) => {
+  const { userId } = req.params;
+  const bookings = await BookingModel.find({
+    user: userId,
+  }).populate("user room");
+
+  res.status(200).json({
+    bookings,
+  })
+}
+
 
 export const putBooking = async (req, res = response) => {
   const { id } = req.params;
@@ -69,9 +93,7 @@ export const putBooking = async (req, res = response) => {
   const updatedBooking = await BookingModel.findByIdAndUpdate(
     id,
     bookingToUpdate,
-    {
-      new: true,
-    },
+    { new: true },
   );
 
   res.status(200).json({
@@ -95,6 +117,20 @@ export const bookingDelete = async (req, res) => {
     });
   }
 
+  await User.findByIdAndUpdate(
+    booking.user,
+    { $pullAll: { bookings: [booking._id]} },
+    { new: true },
+  )
+
+  await Room.findByIdAndUpdate(
+    booking.room,
+    { $pullAll: { bookings: [booking._id]} },
+    { new: true },
+  )
+
+
+
   res.status(200).json({
     msg: "Reservation successfully deleted",
     booking,
@@ -102,23 +138,36 @@ export const bookingDelete = async (req, res) => {
 };
 
 export const bookingPost = async (req, res) => {
-  const { date_start, date_end, room_id, user_id } = req.body;
-
-  const booking = new BookingModel({
-    date_start,
-    date_end,
-    room: room_id,
-    user: user_id,
-  });
-
-  if (new Date(date_end) <= new Date(date_start)) {
-    return res.status(400).json({
-      msg: "End date must be greater than start date",
-    });
-  }
-
   try {
+    const { date_start, date_end, room, user } = req.body;
+
+    const booking = new BookingModel({
+      date_start,
+      date_end,
+      room,
+      user,
+    });
+
+    if (new Date(date_end) <= new Date(date_start)) {
+      return res.status(400).json({
+        msg: "End date must be greater than start date",
+      });
+    }
+
     await booking.save();
+
+    await User.findByIdAndUpdate(
+      user,
+      { $push: { bookings: booking._id } },
+      { new: true },
+    )
+
+    await Room.findByIdAndUpdate(
+      room,
+      { $push: { bookings: booking._id } },
+      { new: true },
+    )
+
     res.status(201).json({
       booking,
     });
