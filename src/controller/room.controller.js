@@ -27,12 +27,10 @@ export const getFeed = async (req, res) => {
   const rooms = await RoomModel.find({ tp_status: "ACTIVE" }).select(
     "-tp_status",
   );
-  const favHotels = new Set((await FavoriteHotels.find({ user })).map(({ hotel }) => hotel));
-  console.log("favHotels");
-  console.log({ favHotels })
+  const favs = await FavoriteHotels.find({ user });
+  const favHotels = new Set(favs.map(({ hotel }) => hotel.toString()));
 
-
-  const hotels = [...new Set(rooms.map((room) => room.hotel))];
+  const hotels = [...new Set(rooms.map((room) => room.hotel.toString()))];
 
   const hotelsWithRating = await Promise.allSettled(
     hotels.map(async (hotelId) => {
@@ -75,8 +73,7 @@ export const getFeed = async (req, res) => {
         ...room.toObject(),
         rating: hotel.average,
         img: roomImage?.image_url || "",
-        quantity_people_rated:
-          hotel.quantity_people_rated,
+        quantity_people_rated: hotel.quantity_people_rated,
         favorite: hotel.fav,
       };
     }),

@@ -20,7 +20,8 @@ export const favoriteDelete = async (req, res) => {
   const { user, hotel } = req.body;
 
   const favorite = await FavoriteHotel.findOneAndDelete({
-    user, hotel,
+    user,
+    hotel,
   });
 
   if (!favorite) {
