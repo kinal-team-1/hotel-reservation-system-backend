@@ -66,7 +66,7 @@ export const getFeed = async (req, res) => {
 
 export const getRoomById = async (req, res) => {
   const { id } = req.params;
-  const room = await RoomModel.findById({ _id: id }).populate('images hotel');
+  const room = await RoomModel.findById({ _id: id }).populate('images hotel bookings');
   if (!room) {
     return res.status(404).json({
       msg: "Room not found",
