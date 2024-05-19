@@ -10,6 +10,7 @@ import hotelImgRoutes from "./src/routes/hotelImg.routes.js";
 import bookingRoutes from "./src/routes/booking.routes.js";
 import roomsRoutes from "./src/routes/room.routes.js";
 import roomImgRoutes from "./src/routes/roomImg.routes.js";
+import favoriteRoutes from "./src/routes/favoriteHoteles.js"
 import { getFeed } from "./src/controller/room.controller.js";
 import { validateJwt } from "./src/middleware/validate-jwt.js";
 
@@ -34,6 +35,7 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/room", roomsRoutes);
 app.use("/api/roomImg", roomImgRoutes);
 app.use("/api/feed", validateJwt, getFeed);
+app.use("/api/favorite", favoriteRoutes)
 
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Not found" });

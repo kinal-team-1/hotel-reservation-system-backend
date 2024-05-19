@@ -17,9 +17,11 @@ export const favoritesGet = async (req, res = response) => {
 };
 
 export const favoriteDelete = async (req, res) => {
-  const { id } = req.params;
+  const { user, hotel } = req.body;
 
-  const favorite = await FavoriteHotel.findByIdAndDelete(id); // Cambio de nombre de la variable
+  const favorite = await FavoriteHotel.findOneAndDelete({
+    user, hotel,
+  });
 
   if (!favorite) {
     return res.status(404).json({
@@ -34,11 +36,11 @@ export const favoriteDelete = async (req, res) => {
 };
 
 export const favoritePost = async (req, res) => {
-  const { user_id, hotel_id } = req.body;
+  const { user, hotel } = req.body;
 
   const favorite = new FavoriteHotel({
-    user_id,
-    hotel_id,
+    user,
+    hotel,
   });
 
   await favorite.save();

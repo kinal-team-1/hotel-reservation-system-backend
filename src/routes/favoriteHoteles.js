@@ -1,5 +1,7 @@
+import User from "../model/user.model.js";
+import Hotel from "../model/hoteles.model.js";
 import { Router } from "express";
-import { param, query } from "express-validator";
+import { query, body } from "express-validator";
 import { validateJwt } from "../middleware/validate-jwt.js";
 import { isHotelAdminLogged } from "../middleware/is-logged.js";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
@@ -32,20 +34,44 @@ router.post(
   "/",
   [
     validateJwt,
-    param("id").isMongoId(),
-    param("user_id", "User ID is required").notEmpty().isMongoId(),
-    param("hotel_id", "Hotel ID is required").notEmpty().isMongoId(),
+    body("user", "User ID is required")
+    .notEmpty()
+    .isMongoId()
+    .custom(async (value) => {
+      const user = await User.findById(value);
+      if (!user) throw new Error("User not found");
+    }),
+    body("hotel", "Hotel ID is required")
+    .notEmpty()
+    .isMongoId()
+    .custom(async (value) => {
+      const hotel = await Hotel.findById(value);
+      if (!hotel) throw new Error("Hotel not found");
+    }),
     validateRequestParams,
   ],
   favoritePost,
 );
 
 router.delete(
-  "/:id",
+  "/",
   [
     validateJwt,
     isHotelAdminLogged,
-    param("id", "It is not a valid id").isMongoId(),
+    body("user", "User ID is required")
+    .notEmpty()
+    .isMongoId()
+    .custom(async (value) => {
+      const user = await User.findById(value);
+      if (!user) throw new Error("User not found");
+    }),
+    body("hotel", "Hotel ID is required")
+    .notEmpty()
+    .isMongoId()
+    .custom(async (value) => {
+      const hotel = await Hotel.findById(value);
+      if (!hotel) throw new Error("Hotel not found");
+    }),
     validateRequestParams,
   ],
   favoriteDelete,
