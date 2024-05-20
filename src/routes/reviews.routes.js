@@ -113,13 +113,13 @@ router.post(
       "is_customer",
       "The field `is_customer` should not be provided by the frontend but validated in the backend",
     ).isEmpty(),
-    body("user_id", "The field `user_id` is required and must be a MongoID")
-      .notEmpty()
-      .isMongoId()
-      .custom(async (value) => {
-        const user = await User.findById(value);
-        if (!user) throw new Error("User not found");
-      }),
+    // body("user_id", "The field `user_id` is required and must be a MongoID")
+    //   .notEmpty()
+    //   .isMongoId()
+    //   .custom(async (value) => {
+    //     const user = await User.findById(value);
+    //     if (!user) throw new Error("User not found");
+    //   }),
     body("hotel_id", "The field `hotel_id` is required and must be a MongoID")
       .notEmpty()
       .isMongoId()

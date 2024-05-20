@@ -74,12 +74,14 @@ export const reviewPost = async (req, res) => {
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    user_id,
+    // user_id,
     hotel_id,
   } = req.body;
 
+  const { _id } = req.loggedUser;
+
   const booking = await Booking.findOne({
-    user: user_id,
+    user: _id,
     hotel: hotel_id,
     tp_status: "ACTIVE",
   });
@@ -91,7 +93,7 @@ export const reviewPost = async (req, res) => {
     rating_cleanliness,
     rating_staff,
     rating_facilities,
-    user_id,
+    user_id: _id,
     hotel_id,
     is_customer,
   });
@@ -124,7 +126,7 @@ export const reviewDelete = async (req, res) => {
 
   await Hotel.findByIdAndUpdate(
     review.hotel_id,
-    { $pullAll: { reviews: [review._id]} },
+    { $pullAll: { reviews: [review._id] } },
     { new: true },
   );
 

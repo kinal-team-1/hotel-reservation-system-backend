@@ -45,11 +45,11 @@ router.get(
     validateJwt,
     isHotelAdminLogged,
     param("hotelId", "The ID must be a valid MongoID")
-    .isMongoId()
-    .custom(async (value) => {
-      const hotel = await Hotel.findById(value);
-      if (!hotel) throw new Error("Hotel not found")
-    }),
+      .isMongoId()
+      .custom(async (value) => {
+        const hotel = await Hotel.findById(value);
+        if (!hotel) throw new Error("Hotel not found");
+      }),
     validateRequestParams,
   ],
   getHotelImageByHotel,
