@@ -9,6 +9,7 @@ import { validateRequestParams } from "../middleware/validate-request-params.js"
 import {
   reviewsGet,
   getReviewById,
+  getReviewByHotelId,
   putReview,
   reviewDelete,
   reviewPost,
@@ -30,6 +31,12 @@ router.get(
     validateRequestParams,
   ],
   reviewsGet,
+);
+
+router.get(
+  "/by-hotel/:id",
+  [param("id").isMongoId(), validateRequestParams],
+  getReviewByHotelId,
 );
 
 router.get(

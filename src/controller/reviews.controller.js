@@ -33,6 +33,20 @@ export const getReviewById = async (req, res) => {
   });
 };
 
+export const getReviewByHotelId = async (req, res) => {
+  const { id } = req.params;
+  const review = await Review.find({hotel_id: id});
+  if (!review) {
+    return res.status(404).json({
+      msg: "Revisions not found",
+    });
+  }
+
+  res.status(200).json({
+    review,
+  });
+};
+
 export const putReview = async (req, res = response) => {
   const { id } = req.params; // Extraemos el id de los parámetros de la solicitud
   const { comment, rating_cleanliness, rating_staff, rating_facilities } =
