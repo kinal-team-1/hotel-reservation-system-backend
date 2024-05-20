@@ -27,7 +27,7 @@ router.get(
 );
 
 router.get(
-  "/by-user/userId",
+  "/by-user/:userId",
   [
     param("userId", "The ID must be a valid MongoID")
       .isMongoId()
@@ -40,7 +40,7 @@ router.get(
 );
 
 router.get(
-  "/by-room/roomId",
+  "/by-room/:roomId",
   [
     param("roomId")
       .isMongoId()

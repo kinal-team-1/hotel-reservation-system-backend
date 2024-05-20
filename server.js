@@ -11,9 +11,11 @@ import bookingRoutes from "./src/routes/booking.routes.js";
 import roomsRoutes from "./src/routes/room.routes.js";
 import roomImgRoutes from "./src/routes/roomImg.routes.js";
 import favoriteRoutes from "./src/routes/favoriteHoteles.js";
+import serviceRoutes from "./src/routes/services.routes.js";
+import invoiceRoutes from "./src/routes/invoice.routes.js";
+import serviceAcquiredRoutes from "./src/routes/servicesAcquired.routes.js";
 import { getFeed } from "./src/controller/room.controller.js";
 import { validateJwt } from "./src/middleware/validate-jwt.js";
-
 dotenv.config();
 
 const app = express();
@@ -36,6 +38,9 @@ app.use("/api/room", roomsRoutes);
 app.use("/api/roomImg", roomImgRoutes);
 app.use("/api/feed", validateJwt, getFeed);
 app.use("/api/favorite", favoriteRoutes);
+app.use("/api/services", serviceRoutes);
+app.use("/api/invoice", invoiceRoutes);
+app.use("/api/servicesAcquired", serviceAcquiredRoutes);
 
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Not found" });

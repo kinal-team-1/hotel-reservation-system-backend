@@ -22,6 +22,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'indent': ['error', 2],
     'comma-dangle': ['error', 'always-multiline'],
     camelcase: "off",
     'object-curly-spacing': ['error', 'always', {
