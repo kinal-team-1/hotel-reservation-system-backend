@@ -36,7 +36,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: String,
-    enum: [ADMIN_HOTEL_ROLE, CLIENT_ROLE],
+    enum: [ADMIN_HOTEL_ROLE, CLIENT_ROLE, ADMIN_PLATFORM_ROLE],
     required: true,
   },
   tp_status: {
