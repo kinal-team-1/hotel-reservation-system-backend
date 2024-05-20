@@ -78,7 +78,7 @@ export const reviewPost = async (req, res) => {
     hotel_id,
   } = req.body;
 
-  const {_id} = req.user;
+  const {_id} = req.loggedUser;
 
   const booking = await Booking.findOne({
     user: _id,
