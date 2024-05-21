@@ -28,6 +28,8 @@ export const dbConnection = async () => {
       serverSelectionTimeoutMS: 5000,
       maxPoolSize: 50,
     });
+
+    mongoose.set("debug", true);
   } catch (e) {
     console.log("Database connection failed", e);
   }
