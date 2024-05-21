@@ -48,7 +48,15 @@ export const getBookingsByUser = async (req, res) => {
   const { userId } = req.params;
   const bookings = await BookingModel.find({
     user: userId,
-  }).populate("user room");
+  }).populate({
+    path: "room",
+    populate: [
+      {
+        path: "images",
+        model: "RoomImage",
+      },
+    ],
+  });
 
   res.status(200).json({
     bookings,
@@ -120,12 +128,12 @@ export const bookingDelete = async (req, res) => {
   await Promise.all([
     User.findByIdAndUpdate(
       booking.user,
-      { $pullAll: { bookings: [booking._id]} },
+      { $pullAll: { bookings: [booking._id] } },
       { new: true },
     ),
     Room.findByIdAndUpdate(
       booking.room,
-      { $pullAll: { bookings: [booking._id]} },
+      { $pullAll: { bookings: [booking._id] } },
       { new: true },
     ),
   ]);
