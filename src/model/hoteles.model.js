@@ -36,6 +36,7 @@ const hotelSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "Review",
+      default: [],
     },
   ],
 });

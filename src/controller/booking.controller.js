@@ -2,6 +2,7 @@ import BookingModel from "../model/booking.model.js";
 import User from "../model/user.model.js";
 import Room from "../model/room.model.js";
 import { response } from "express";
+import InvoiceModel from "../model/invoice.model.js";
 
 export const bookingsGet = async (req, res = response) => {
   const { limit, page } = req.query;
@@ -125,7 +126,7 @@ export const bookingDelete = async (req, res) => {
     });
   }
 
-  await Promise.all([
+  const [, , invoice] = await Promise.all([
     User.findByIdAndUpdate(
       booking.user,
       { $pullAll: { bookings: [booking._id] } },
@@ -136,7 +137,17 @@ export const bookingDelete = async (req, res) => {
       { $pullAll: { bookings: [booking._id] } },
       { new: true },
     ),
+    InvoiceModel.findOneAndUpdate(
+      { booking: booking._id },
+      { tp_status: "INACTIVE" },
+    ),
   ]);
+
+  if (!invoice) {
+    return res.status(404).json({
+      msg: "Invoice not found",
+    });
+  }
 
   res.status(200).json({
     msg: "Reservation successfully deleted",
@@ -175,6 +186,19 @@ export const bookingPost = async (req, res) => {
     ]);
 
     booking.hotel = objRoom.hotel;
+
+    const daysBooked = Math.ceil(
+      (new Date(date_end) - new Date(date_start)) / (1000 * 60 * 60 * 24),
+    );
+
+    // create Invoice
+    const invoice = new InvoiceModel({
+      price: booking.room.price * daysBooked,
+      booking_id: booking._id,
+      user_id: user._id,
+    });
+
+    await invoice.save();
 
     await booking.save();
 

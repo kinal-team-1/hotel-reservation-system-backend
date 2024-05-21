@@ -42,12 +42,14 @@ const roomSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "RoomImage",
+      default: [],
     },
   ],
   bookings: [
     {
       type: Schema.Types.ObjectId,
       ref: "Booking",
+      default: [],
     },
   ],
 });

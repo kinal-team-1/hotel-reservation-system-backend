@@ -29,6 +29,13 @@ const invoiceSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  services_acquired: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Services_Acquired",
+      default: [],
+    },
+  ],
 });
 
 const invoiceModel = model("Invoice", invoiceSchema);
