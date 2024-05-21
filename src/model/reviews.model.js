@@ -28,11 +28,13 @@ const reviewSchema = new Schema({
     required: [true, "Specify whether it was a customer"],
   },
   user_id: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: [true, "User ID is required"],
   },
   hotel_id: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Hotel",
     required: [true, "Hotel ID is required"],
   },
 });

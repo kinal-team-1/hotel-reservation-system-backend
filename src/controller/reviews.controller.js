@@ -35,7 +35,7 @@ export const getReviewById = async (req, res) => {
 
 export const getReviewByHotelId = async (req, res) => {
   const { id } = req.params;
-  const review = await Review.find({hotel_id: id});
+  const review = await Review.find({ hotel_id: id }).populate("user_id");
   if (!review) {
     return res.status(404).json({
       msg: "Revisions not found",
