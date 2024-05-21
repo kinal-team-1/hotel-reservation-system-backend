@@ -35,6 +35,40 @@ export const getBookingById = async (req, res) => {
   });
 };
 
+export const getUnavailableDates = async (req, res) => {
+  const { userId } = req.params;
+  const bookings = await BookingModel.find({
+    user: userId,
+    tp_status: "ACTIVE",
+  });
+
+  const mapBookingsByRoom = bookings.reduce((map, booking) => {
+    map[booking.room] = map[booking.room] || [];
+    map[booking.room].push(booking);
+
+    return map;
+  }, {});
+
+  const result = Object.entries(mapBookingsByRoom).reduce(
+    (map, [key, bookings]) => {
+      const unavailableDates = bookings.map((booking) => {
+        return {
+          start: booking.date_start,
+          end: booking.date_end,
+        };
+      });
+
+      console.log({ unavailableDates, key });
+      map[key] = unavailableDates;
+
+      return map;
+    },
+    {},
+  );
+
+  res.status(200).json(result);
+};
+
 export const getBookingsByRoom = async (req, res) => {
   const { roomId } = req.params;
   const bookings = await BookingModel.find({
@@ -144,7 +178,7 @@ export const bookingDelete = async (req, res) => {
         { new: true },
       ),
       InvoiceModel.findOneAndUpdate(
-        { booking: booking._id },
+        { booking_id: booking._id },
         { tp_status: "INACTIVE" },
       ),
     ]);
@@ -183,7 +217,7 @@ export const bookingPost = async (req, res) => {
       date_end,
       room,
       user,
-    }).populate("room");
+    });
 
     if (new Date(date_end) <= new Date(date_start)) {
       return res.status(400).json({
@@ -212,7 +246,7 @@ export const bookingPost = async (req, res) => {
 
     // create Invoice
     const invoice = new InvoiceModel({
-      price: booking.room.night_price * daysBooked,
+      price: objRoom.night_price * daysBooked,
       booking_id: booking._id,
       user_id: user,
     });
