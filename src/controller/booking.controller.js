@@ -36,9 +36,10 @@ export const getBookingById = async (req, res) => {
 
 export const getBookingsByRoom = async (req, res) => {
   const { roomId } = req.params;
-  const bookings = await BookingModel.find({ room: roomId }).populate(
-    "user room",
-  );
+  const bookings = await BookingModel.find({
+    room: roomId,
+    tp_status: "ACTIVE",
+  }).populate("user room");
 
   res.status(200).json({
     bookings,
@@ -49,6 +50,7 @@ export const getBookingsByUser = async (req, res) => {
   const { userId } = req.params;
   const bookings = await BookingModel.find({
     user: userId,
+    tp_status: "ACTIVE",
   }).populate({
     path: "room",
     populate: [
