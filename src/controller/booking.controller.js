@@ -115,7 +115,7 @@ export const putBooking = async (req, res = response) => {
     };
 
     const oldBooking = await BookingModel.findById(id).select(
-      "date_start date_end",
+      "date_start date_end room",
     );
 
     if (!oldBooking) {
@@ -169,8 +169,6 @@ export const putBooking = async (req, res = response) => {
         },
       ],
     });
-
-    console.log(bookingsInRange);
 
     if (bookingsInRange.length > 0) {
       return res.status(400).json({
