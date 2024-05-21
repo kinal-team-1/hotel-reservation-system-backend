@@ -183,7 +183,7 @@ export const bookingPost = async (req, res) => {
       date_end,
       room,
       user,
-    });
+    }).populate("room");
 
     if (new Date(date_end) <= new Date(date_start)) {
       return res.status(400).json({
@@ -212,9 +212,9 @@ export const bookingPost = async (req, res) => {
 
     // create Invoice
     const invoice = new InvoiceModel({
-      price: booking.room.price * daysBooked,
+      price: booking.room.night_price * daysBooked,
       booking_id: booking._id,
-      user_id: user._id,
+      user_id: user,
     });
 
     await invoice.save();
