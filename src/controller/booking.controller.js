@@ -3,6 +3,7 @@ import User from "../model/user.model.js";
 import Room from "../model/room.model.js";
 import { response } from "express";
 import InvoiceModel from "../model/invoice.model.js";
+import mongoose from "mongoose";
 
 export const bookingsGet = async (req, res = response) => {
   const { limit, page } = req.query;
@@ -114,50 +115,66 @@ export const putBooking = async (req, res = response) => {
 };
 
 export const bookingDelete = async (req, res) => {
-  const { id } = req.params;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { id } = req.params;
 
-  const booking = await BookingModel.findByIdAndUpdate(
-    id,
-    { tp_status: "INACTIVE" },
-    { new: true },
-  );
-
-  if (!booking) {
-    return res.status(404).json({
-      msg: "Reservation not found",
-    });
-  }
-
-  const [, , invoice] = await Promise.all([
-    User.findByIdAndUpdate(
-      booking.user,
-      { $pullAll: { bookings: [booking._id] } },
-      { new: true },
-    ),
-    Room.findByIdAndUpdate(
-      booking.room,
-      { $pullAll: { bookings: [booking._id] } },
-      { new: true },
-    ),
-    InvoiceModel.findOneAndUpdate(
-      { booking: booking._id },
+    const booking = await BookingModel.findByIdAndUpdate(
+      id,
       { tp_status: "INACTIVE" },
-    ),
-  ]);
+      { new: true },
+    );
 
-  if (!invoice) {
-    return res.status(404).json({
-      msg: "Invoice not found",
+    if (!booking) {
+      return res.status(404).json({
+        msg: "Reservation not found",
+      });
+    }
+
+    const [, , invoice] = await Promise.all([
+      User.findByIdAndUpdate(
+        booking.user,
+        { $pullAll: { bookings: [booking._id] } },
+        { new: true },
+      ),
+      Room.findByIdAndUpdate(
+        booking.room,
+        { $pullAll: { bookings: [booking._id] } },
+        { new: true },
+      ),
+      InvoiceModel.findOneAndUpdate(
+        { booking: booking._id },
+        { tp_status: "INACTIVE" },
+      ),
+    ]);
+
+    if (!invoice) {
+      return res.status(404).json({
+        msg: "Invoice not found",
+      });
+    }
+
+    res.status(200).json({
+      msg: "Reservation successfully deleted",
+      booking,
     });
+  } catch (e) {
+    await session.abortTransaction();
+    res.status(500).json({
+      msg: "Internal Server Error",
+      error: e.message,
+    });
+    // NECESSARY TO USE FINALLY TO CLOSE THE SESSION
+  } finally {
+    session.endSession();
   }
-
-  res.status(200).json({
-    msg: "Reservation successfully deleted",
-    booking,
-  });
 };
 
 export const bookingPost = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { date_start, date_end, room, user } = req.body;
 
@@ -204,13 +221,18 @@ export const bookingPost = async (req, res) => {
 
     await booking.save();
 
+    await session.commitTransaction();
+
     res.status(201).json({
       booking,
     });
   } catch (error) {
+    await session.abortTransaction();
     res.status(500).json({
       msg: "Internal Server Error",
       error: error.message,
     });
+  } finally {
+    session.endSession();
   }
 };
