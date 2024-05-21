@@ -102,50 +102,94 @@ export const getBookingsByUser = async (req, res) => {
 };
 
 export const putBooking = async (req, res = response) => {
-  const { id } = req.params;
-  const { date_start, date_end } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { id } = req.params;
+    const { date_start, date_end } = req.body;
 
-  const bookingToUpdate = {
-    date_start,
-    date_end,
-    updated_at: new Date(),
-  };
+    const bookingToUpdate = {
+      date_start,
+      date_end,
+      updated_at: new Date(),
+    };
 
-  const oldBooking = await BookingModel.findById(id).select(
-    "date_start date_end",
-  );
+    const oldBooking = await BookingModel.findById(id).select(
+      "date_start date_end",
+    );
 
-  if (!oldBooking) {
-    return res.status(404).json({
-      msg: "Reservation not found",
-    });
-  }
-
-  if (
-    new Date(date_end || oldBooking.date_end) <=
-    new Date(date_start || oldBooking.date_start)
-  ) {
-    return res.status(400).json({
-      msg: "End date must be greater than start date",
-    });
-  }
-
-  Object.keys(bookingToUpdate).forEach((key) => {
-    if (bookingToUpdate[key] === undefined) {
-      delete bookingToUpdate[key];
+    if (!oldBooking) {
+      return res.status(404).json({
+        msg: "Reservation not found",
+      });
     }
-  });
 
-  const updatedBooking = await BookingModel.findByIdAndUpdate(
-    id,
-    bookingToUpdate,
-    { new: true },
-  );
+    if (
+      new Date(date_end || oldBooking.date_end) <=
+      new Date(date_start || oldBooking.date_start)
+    ) {
+      return res.status(400).json({
+        msg: "End date must be greater than start date",
+      });
+    }
 
-  res.status(200).json({
-    msg: "Reservation successfully updated",
-    booking: updatedBooking,
-  });
+    // check that no other booking is in the same date range
+    const bookingsInRange = await BookingModel.find({
+      room: oldBooking.room,
+      tp_status: "ACTIVE",
+      // where not same id
+      _id: { $ne: id },
+      $or: [
+        {
+          date_start: {
+            // check if new start date is between any other booking
+            $gte: new Date(date_start || oldBooking.date_start),
+            $lte: new Date(date_end || oldBooking.date_end),
+          },
+        },
+        {
+          date_end: {
+            // check if new end date is between any other booking
+            $gte: new Date(date_start || oldBooking.date_start),
+            $lte: new Date(date_end || oldBooking.date_end),
+          },
+        },
+      ],
+    });
+
+    if (bookingsInRange.length > 0) {
+      return res.status(400).json({
+        msg: "There is already a booking in the same date range",
+      });
+    }
+
+    Object.keys(bookingToUpdate).forEach((key) => {
+      if (bookingToUpdate[key] === undefined) {
+        delete bookingToUpdate[key];
+      }
+    });
+
+    const updatedBooking = await BookingModel.findByIdAndUpdate(
+      id,
+      bookingToUpdate,
+      { new: true },
+    );
+
+    await session.commitTransaction();
+
+    res.status(200).json({
+      msg: "Reservation successfully updated",
+      booking: updatedBooking,
+    });
+  } catch (e) {
+    await session.abortTransaction();
+    res.status(500).json({
+      msg: "Internal Server Error",
+      error: e.message,
+    });
+  } finally {
+    session.endSession();
+  }
 };
 
 export const bookingDelete = async (req, res) => {
