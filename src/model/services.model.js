@@ -16,8 +16,8 @@ const serviceSchema = new Schema({
     default: "ACTIVE",
   },
   duration: {
-    type: Date,
-    required: [true, "La duración es requerida"],
+    hours: { type: Number, required: true },
+    minutes: { type: Number, required: true },
   },
   price: {
     type: Number,

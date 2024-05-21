@@ -9,6 +9,7 @@ import {
   getServiceById,
   serviceDelete,
 } from "../controller/services.controller.js";
+import validateDuration from "../middleware/validate-duration.js";
 
 const router = Router();
 
@@ -42,7 +43,7 @@ router.put(
     body("description", "La descripción no puede estar vacía")
       .optional()
       .isLength({ min: 10 }),
-    body("duration", "La duración es obligatoria").optional().isISO8601(),
+    body("duration").optional().custom(validateDuration),
     body("price", "El precio debe ser un número válido").optional().isFloat(),
     validateRequestParams,
   ],
@@ -57,7 +58,7 @@ router.post(
     body("description", "La descripción no puede estar vacía").isLength({
       min: 10,
     }),
-    body("duration", "La duración es obligatoria").isISO8601(),
+    body("duration").custom(validateDuration),
     body("price", "El precio debe ser un número válido").isFloat(),
     validateRequestParams,
   ],
