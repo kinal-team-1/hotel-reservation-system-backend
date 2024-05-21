@@ -133,29 +133,44 @@ export const putBooking = async (req, res = response) => {
       });
     }
 
-    // check that no other booking is in the same date range
     const bookingsInRange = await BookingModel.find({
       room: oldBooking.room,
       tp_status: "ACTIVE",
-      // where not same id
-      _id: { $ne: id },
+      _id: { $ne: id }, // Excluir la reserva que se está actualizando
       $or: [
         {
+          // Caso 1: La fecha de inicio de la otra reserva está dentro del nuevo rango
           date_start: {
-            // check if new start date is between any other booking
             $gte: new Date(date_start || oldBooking.date_start),
             $lte: new Date(date_end || oldBooking.date_end),
           },
         },
         {
+          // Caso 2: La fecha de fin de la otra reserva está dentro del nuevo rango
           date_end: {
-            // check if new end date is between any other booking
             $gte: new Date(date_start || oldBooking.date_start),
             $lte: new Date(date_end || oldBooking.date_end),
           },
+        },
+        {
+          // Caso 3: El nuevo rango está completamente dentro de la otra reserva
+          $and: [
+            {
+              date_start: {
+                $lte: new Date(date_start || oldBooking.date_start),
+              },
+            },
+            {
+              date_end: {
+                $gte: new Date(date_end || oldBooking.date_end),
+              },
+            },
+          ],
         },
       ],
     });
+
+    console.log(bookingsInRange);
 
     if (bookingsInRange.length > 0) {
       return res.status(400).json({
