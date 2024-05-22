@@ -52,10 +52,10 @@ router.post(
       }
       return true;
     }),
-    validateRequestParams
+    validateRequestParams,
   ],
-  roomImagesPost
-)
+  roomImagesPost,
+);
 
 router.post(
   "/",
