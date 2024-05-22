@@ -11,9 +11,11 @@ import {
   getBookingsByRoom,
   getBookingsByUser,
   getUnavailableDates,
+  getBookingsByHotel,
 } from "../controller/booking.controller.js";
 import User from "../model/user.model.js";
 import Room from "../model/room.model.js";
+import Hotel from "../model/hoteles.model.js";
 
 const router = Router();
 
@@ -53,6 +55,19 @@ router.get(
       }),
   ],
   getBookingsByRoom,
+);
+
+router.get(
+  "/by-hotel/:hotelId",
+  [
+    param("hotelId", "The ID must be a valid MongoID")
+      .isMongoId()
+      .custom(async (value) => {
+        const hotel = await Hotel.findById(value);
+        if (!hotel) throw new Error("Hotel not found");
+      }),
+  ],
+  getBookingsByHotel,
 );
 
 router.get(
