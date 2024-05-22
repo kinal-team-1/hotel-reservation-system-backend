@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import UserModel from "../model/user.model.js";
 import { generateToken } from "../helpers/jwt.js";
-
+import Hotel from "../model/hoteles.model.js";
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -53,5 +53,19 @@ export const validateToken = async (req, res) => {
   return res.status(200).json({
     message: "User is authorized",
     data: req.loggedUser,
+  });
+};
+
+export const validateTokenAndGetVirtuals = async (req, res) => {
+  // the validation will be done by the middleware, here we are
+  // just gonna handle the success case
+  const user = req.loggedUser;
+  const hotels = await Hotel.find({
+    user_admin: user._id,
+    tp_status: "ACTIVE",
+  });
+  return res.status(200).json({
+    message: "User is authorized",
+    data: { ...user.toJSON(), hotels },
   });
 };

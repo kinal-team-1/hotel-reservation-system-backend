@@ -39,6 +39,11 @@ const hotelSchema = new Schema({
       default: [],
     },
   ],
+  user_admin: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "The `user_admin` is required"],
+  },
 });
 
 const hotelModel = model("Hotel", hotelSchema);

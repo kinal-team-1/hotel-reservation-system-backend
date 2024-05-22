@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import Hotel from "./hoteles.model.js";
 
 // Definir los roles
 export const [ADMIN_HOTEL_ROLE, CLIENT_ROLE, ADMIN_PLATFORM_ROLE] = [

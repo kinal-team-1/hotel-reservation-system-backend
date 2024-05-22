@@ -1,7 +1,12 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import { validateRequestParams } from "../middleware/validate-request-params.js";
-import { login, signup, validateToken } from "../controller/auth.controller.js";
+import {
+  login,
+  signup,
+  validateToken,
+  validateTokenAndGetVirtuals,
+} from "../controller/auth.controller.js";
 // import { isClientLogged, isHotelAdminLogged, isAdminLogged } from "../middleware/is-logged.js";
 import { validateJwt } from "../middleware/validate-jwt.js";
 import {
@@ -65,5 +70,6 @@ router.post(
 );
 
 router.get("/token", validateJwt, validateToken);
+router.get("/token/admin", validateJwt, validateTokenAndGetVirtuals);
 
 export default router;
