@@ -34,6 +34,23 @@ export const getHotelById = async (req, res) => {
   });
 };
 
+export const getHotelByUserId = async (req, res) => {
+  const { id } = req.params;
+  const hotel = await HotelModel.findOne({ user_admin: id });
+  if (!hotel) {
+    return res.status(404).json({
+      msg: "Room not found",
+    });
+  }
+
+  const imgs = await HotelImg.find({ hotel_id: id });
+
+  res.status(200).json({
+    ...hotel.toObject(),
+    imgs,
+  });
+};
+
 export const putHotel = async (req, res = response) => {
   const { id } = req.params;
   const { name, country, address, description } = req.body;

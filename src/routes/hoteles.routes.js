@@ -8,6 +8,7 @@ import {
   hotelPost,
   hotelsGet,
   getHotelById,
+  getHotelByUserId,
   hotelDelete,
 } from "../controller/hoteles.controller.js";
 
@@ -30,6 +31,15 @@ router.get(
     validateRequestParams,
   ],
   getHotelById,
+);
+
+router.get(
+  "/by-user/:id",
+  [
+    param("id", "The ID must be a valid MongoID").isMongoId(),
+    validateRequestParams,
+  ],
+  getHotelByUserId,
 );
 
 router.put(
