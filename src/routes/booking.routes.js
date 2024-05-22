@@ -10,8 +10,9 @@ import {
   bookingPost,
   getBookingsByRoom,
   getBookingsByUser,
-  getUnavailableDates,
+  getUnavailableDatesByUserReservations,
   getBookingsByHotel,
+  getUnavailableDatesByHotelReservations,
 } from "../controller/booking.controller.js";
 import User from "../model/user.model.js";
 import Room from "../model/room.model.js";
@@ -42,7 +43,15 @@ router.get(
   getBookingsByUser,
 );
 
-router.get("/by-user/:userId/rooms/taken-dates", getUnavailableDates);
+router.get(
+  "/by-user/:userId/rooms/taken-dates",
+  getUnavailableDatesByUserReservations,
+);
+
+router.get(
+  "/by-hotel/:hotelId/rooms/taken-dates",
+  getUnavailableDatesByHotelReservations,
+);
 
 router.get(
   "/by-room/:roomId",

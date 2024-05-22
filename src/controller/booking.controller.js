@@ -35,7 +35,7 @@ export const getBookingById = async (req, res) => {
   });
 };
 
-export const getUnavailableDates = async (req, res) => {
+export const getUnavailableDatesByUserReservations = async (req, res) => {
   const { userId } = req.params;
   const bookings = await BookingModel.find({
     user: userId,
@@ -69,6 +69,39 @@ export const getUnavailableDates = async (req, res) => {
   res.status(200).json(result);
 };
 
+export const getUnavailableDatesByHotelReservations = async (req, res) => {
+  const { hotelId } = req.params;
+  const bookings = await BookingModel.find({
+    hotel: hotelId,
+    tp_status: "ACTIVE",
+  });
+
+  const mapBookingsByRoom = bookings.reduce((map, booking) => {
+    map[booking.room] = map[booking.room] || [];
+    map[booking.room].push(booking);
+
+    return map;
+  }, {});
+
+  const result = Object.entries(mapBookingsByRoom).reduce(
+    (map, [key, bookings]) => {
+      const unavailableDates = bookings.map((booking) => {
+        return {
+          start: booking.date_start,
+          end: booking.date_end,
+        };
+      });
+
+      console.log({ unavailableDates, key });
+      map[key] = unavailableDates;
+
+      return map;
+    },
+    {},
+  );
+
+  res.status(200).json(result);
+};
 export const getBookingsByRoom = async (req, res) => {
   const { roomId } = req.params;
   const bookings = await BookingModel.find({
@@ -86,7 +119,15 @@ export const getBookingsByHotel = async (req, res) => {
   const bookings = await BookingModel.find({
     hotel: hotelId,
     tp_status: "ACTIVE",
-  }).populate("user room hotel");
+  }).populate({
+    path: "room",
+    populate: [
+      {
+        path: "images",
+        model: "RoomImage",
+      },
+    ],
+  });
 
   res.status(200).json({
     bookings,

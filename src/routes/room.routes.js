@@ -11,6 +11,7 @@ import {
   putRoom,
   roomDelete,
   roomPost,
+  getRoomsStats,
 } from "../controller/room.controller.js";
 
 const router = Router();
@@ -42,6 +43,8 @@ router.get(
   ],
   getRoomByHotelId,
 );
+
+router.get("stats/:hotelId", getRoomsStats);
 
 router.put(
   "/:id",

@@ -81,7 +81,11 @@ export const signupHotel = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "User created successfully", user: newUser });
+      .json({
+        message: "User created successfully",
+        user: newUser,
+        hotel: newHotel,
+      });
   } catch (error) {
     await session.abortTransaction();
     console.error("Error creating user:", error);
