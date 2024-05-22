@@ -66,6 +66,10 @@ router
     [
       validateJwt,
       isHotelAdminLogged,
+      async (req, res, next) => {
+        console.log(req.body, "BODY");
+        next();
+      },
       body("email", "If defined, email must be a valid email")
         .optional()
         .isEmail(),
@@ -85,7 +89,7 @@ router
         `If defined, role must be defined, must be one of these: ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`,
       )
         .optional()
-        .isIn([ADMIN_HOTEL_ROLE, CLIENT_ROLE]),
+        .isIn([ADMIN_HOTEL_ROLE, CLIENT_ROLE, ADMIN_PLATFORM_ROLE]),
       validateRequestParams,
     ],
     updateUserById,
