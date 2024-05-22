@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import UserModel from "../model/user.model.js";
 import { generateToken } from "../helpers/jwt.js";
 import Hotel from "../model/hoteles.model.js";
+import mongoose from "mongoose";
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -44,6 +45,49 @@ export const signup = async (req, res) => {
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const signupHotel = async (req, res) => {
+  const { user, hotel } = req.body;
+  const { email, password, name, lastname, role } = user;
+  const { country, address, name: nameHotel, description } = hotel;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const salt = bcryptjs.genSaltSync();
+    const encryptedPassword = bcryptjs.hashSync(password, salt);
+    const newUser = new UserModel({
+      email,
+      password: encryptedPassword,
+      name,
+      lastname,
+      role,
+    });
+
+    const newHotel = new Hotel({
+      name: nameHotel,
+      country,
+      address,
+      description,
+      tp_status: "ACTIVE",
+      user_admin: newUser._id,
+    });
+
+    await newUser.save();
+    await newHotel.save();
+
+    await session.commitTransaction();
+
+    res
+      .status(201)
+      .json({ message: "User created successfully", user: newUser });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Error creating user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  } finally {
+    session.endSession();
   }
 };
 
