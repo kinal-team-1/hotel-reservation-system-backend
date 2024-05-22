@@ -66,10 +66,6 @@ router
     [
       validateJwt,
       isHotelAdminLogged,
-      async (req, res, next) => {
-        console.log(req.body, "BODY");
-        next();
-      },
       body("email", "If defined, email must be a valid email")
         .optional()
         .isEmail(),
