@@ -87,10 +87,6 @@ router.post(
       "Lastname is required and must be at least 3 characters long",
     ).isLength({ min: 3 }),
     body(
-      "user.role",
-      `Role must be defined, must be one of these ${CLIENT_ROLE}, ${ADMIN_HOTEL_ROLE}, ${ADMIN_PLATFORM_ROLE}`,
-    ).isIn([CLIENT_ROLE, ADMIN_HOTEL_ROLE, ADMIN_PLATFORM_ROLE]),
-    body(
       "hotel.country",
       "Country is required and must be at least 3 characters long",
     ).isLength({ min: 3 }),
