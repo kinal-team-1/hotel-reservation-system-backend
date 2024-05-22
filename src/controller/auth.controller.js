@@ -1,5 +1,5 @@
 import bcryptjs from "bcryptjs";
-import UserModel from "../model/user.model.js";
+import UserModel, { ADMIN_HOTEL_ROLE } from "../model/user.model.js";
 import { generateToken } from "../helpers/jwt.js";
 import Hotel from "../model/hoteles.model.js";
 import mongoose from "mongoose";
@@ -50,7 +50,7 @@ export const signup = async (req, res) => {
 
 export const signupHotel = async (req, res) => {
   const { user, hotel } = req.body;
-  const { email, password, name, lastname, role } = user;
+  const { email, password, name, lastname } = user;
   const { country, address, name: nameHotel, description } = hotel;
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -62,7 +62,7 @@ export const signupHotel = async (req, res) => {
       password: encryptedPassword,
       name,
       lastname,
-      role,
+      role: ADMIN_HOTEL_ROLE,
     });
 
     const newHotel = new Hotel({
