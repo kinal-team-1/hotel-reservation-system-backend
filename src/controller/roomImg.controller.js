@@ -31,6 +31,32 @@ export const roomImagePost = async (req, res) => {
   }
 };
 
+export const roomImagesPost = async (req, res) => {
+  try {
+    const images = req.body.images;
+    const savedImages = [];
+
+    for (const image of images) {
+      const newImage = new RoomImage({
+        image_url: image.image_url,
+        room_id: image.room_id,
+        is_main_image: image.is_main_image,
+      });
+
+      const savedImage = await newImage.save();
+      savedImages.push(savedImage);
+    }
+
+    res.status(201).json({ images: savedImages });
+  } catch (error) {
+    console.error("Error al crear las imágenes:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+ 
+  }
+}
+
+
+
 export const changeMainImage = async (req, res) => {
   try {
     const { id } = req.params;
