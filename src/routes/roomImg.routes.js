@@ -8,6 +8,7 @@ import {
   roomImagesGet,
   changeMainImage,
   roomImageDelete,
+  roomImagesPost,
 } from "../controller/roomImg.controller.js";
 
 const router = Router();
@@ -24,6 +25,37 @@ router.get(
   ],
   roomImagesGet,
 );
+
+router.post(
+  "/multiple",
+  [
+    validateJwt,
+    isHotelAdminLogged,
+    body("images", "Images array is required").isArray(),
+    body("images.*.image_url", "Image URL is required for each image")
+      .not()
+      .isEmpty(),
+    body(
+      "room_id",
+      "The field `room_id` is required and must be a valid MongoId",
+    ).isMongoId(),
+    body(
+      "images.*.is_main_image",
+      "is_main_image must be a boolean for each image",
+    ).isBoolean(),
+    body("images").custom((images) => {
+      const mainImages = images.filter((image) => image.is_main_image);
+      if (mainImages.length !== 1) {
+        throw new Error(
+          "Exactly one image must have is_main_image set to true",
+        );
+      }
+      return true;
+    }),
+    validateRequestParams
+  ],
+  roomImagesPost
+)
 
 router.post(
   "/",
