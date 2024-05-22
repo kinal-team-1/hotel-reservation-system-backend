@@ -47,7 +47,7 @@ export const roomImagesPost = async (req, res) => {
       savedImages.push(savedImage);
     }
 
-    res.status(201).json({ images: savedImages });
+    res.status(201).json({ images: RoomImage});
   } catch (error) {
     console.error("Error al crear las imágenes:", error);
     res.status(500).json({ message: "Error interno del servidor" });
