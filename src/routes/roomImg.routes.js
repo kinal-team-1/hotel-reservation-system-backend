@@ -36,8 +36,8 @@ router.post(
       .not()
       .isEmpty(),
     body(
-      "room_id",
-      "The field `room_id` is required and must be a valid MongoId",
+      "images.*.room_id",
+      "Room is required and must be a valid MongoId",
     ).isMongoId(),
     body(
       "images.*.is_main_image",
