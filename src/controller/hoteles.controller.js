@@ -90,6 +90,7 @@ export const hotelDelete = async (req, res) => {
 };
 
 export const hotelPost = async (req, res) => {
+  const user = req.loggedUser;
   const { name, country, address, description } = req.body;
   const hotel = new HotelModel({
     name,
@@ -97,6 +98,7 @@ export const hotelPost = async (req, res) => {
     address,
     description,
     tp_status: "ACTIVE",
+    user_admin: user._id,
   });
 
   await hotel.save();

@@ -11,6 +11,7 @@ import {
   hotelImageDelete,
   changeMainImage,
   getHotelImageByHotel,
+  hotelImagesPost,
 } from "../controller/hotelImg.controller.js";
 
 const router = Router();
@@ -69,6 +70,37 @@ router.put(
     validateRequestParams,
   ],
   changeMainImage,
+);
+
+router.post(
+  "/multiple",
+  [
+    validateJwt,
+    isHotelAdminLogged,
+    body("images", "Images array is required").isArray(),
+    body("images.*.image_url", "Image URL is required for each image")
+      .not()
+      .isEmpty(),
+    body(
+      "images.*.hotel_id",
+      "Hotel ID is required for each image",
+    ).isMongoId(),
+    body(
+      "images.*.is_main_image",
+      "is_main_image must be a boolean for each image",
+    ).isBoolean(),
+    body("images").custom((images) => {
+      const mainImages = images.filter((image) => image.is_main_image);
+      if (mainImages.length !== 1) {
+        throw new Error(
+          "Exactly one image must have is_main_image set to true",
+        );
+      }
+      return true;
+    }),
+    validateRequestParams,
+  ],
+  hotelImagesPost, // This should be your new controller function that handles an array of images
 );
 
 router.post(

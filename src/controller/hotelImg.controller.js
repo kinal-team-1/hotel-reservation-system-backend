@@ -37,6 +37,29 @@ export const getHotelImageByHotel = async (req, res = response) => {
   }
 };
 
+export const hotelImagesPost = async (req, res) => {
+  try {
+    const images = req.body.images;
+    const savedImages = [];
+
+    for (const image of images) {
+      const newImage = new HotelImg({
+        image_url: image.image_url,
+        hotel_id: image.hotel_id,
+        is_main_image: image.is_main_image,
+      });
+
+      const savedImage = await newImage.save();
+      savedImages.push(savedImage);
+    }
+
+    res.status(201).json({ images: savedImages });
+  } catch (error) {
+    console.error("Error al crear las imágenes:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
 export const hotelImagePost = async (req, res) => {
   try {
     const { image_url, hotel_id, is_main_image } = req.body;
