@@ -102,7 +102,6 @@ export const getUnavailableDatesByHotelReservations = async (req, res) => {
 
   res.status(200).json(result);
 };
-
 export const getBookingsByRoom = async (req, res) => {
   const { roomId } = req.params;
   const bookings = await BookingModel.find({

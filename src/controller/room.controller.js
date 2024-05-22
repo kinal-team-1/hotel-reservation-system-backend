@@ -3,6 +3,7 @@ import RoomModel from "../model/room.model.js";
 import Review from "../model/reviews.model.js";
 import RoomImage from "../model/roomImg.model.js";
 import FavoriteHotels from "../model/favoriteHoteles.model.js";
+import BookingModel from "../model/booking.model.js";
 
 export const roomsGet = async (req, res = response) => {
   const { limit, page } = req.query;
@@ -113,6 +114,33 @@ export const getRoomByHotelId = async (req, res) => {
   res.status(200).json({
     rooms,
   });
+};
+
+export const getRoomsStats = async (req, res) => {
+  const { hotelId } = req.params;
+
+  // Find all bookings for the given hotel
+  const bookings = await BookingModel.find({
+    hotel: hotelId,
+    tp_status: "ACTIVE",
+  });
+
+  // Group bookings by room and count the number of bookings for each room
+  const bookingCounts = bookings.reduce((counts, booking) => {
+    counts[booking.room] = (counts[booking.room] || 0) + 1;
+    return counts;
+  }, {});
+
+  // Find all rooms for the given hotel
+  const rooms = await RoomModel.find({ hotel: hotelId });
+
+  // Combine room data with booking count data
+  const roomsWithBookingCounts = rooms.map((room) => ({
+    ...room._doc,
+    bookingCount: bookingCounts[room._id] || 0,
+  }));
+
+  res.status(200).json(roomsWithBookingCounts);
 };
 
 export const putRoom = async (req, res = response) => {
