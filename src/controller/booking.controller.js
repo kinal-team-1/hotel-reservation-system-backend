@@ -120,7 +120,15 @@ export const getBookingsByHotel = async (req, res) => {
   const bookings = await BookingModel.find({
     hotel: hotelId,
     tp_status: "ACTIVE",
-  }).populate("user room hotel");
+  }).populate({
+    path: "room",
+    populate: [
+      {
+        path: "images",
+        model: "RoomImage",
+      },
+    ],
+  });
 
   res.status(200).json({
     bookings,
