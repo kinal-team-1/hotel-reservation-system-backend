@@ -5,11 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "git config core.hooksPath hooks",
+    "preinstall": "node -e \"const fs = require('fs'); if (fs.existsSync('.git')) { require('child_process').execSync('git config core.hooksPath hooks'); }\"",
     "format": "prettier-eslint --write \"**/*.{js,cjs,jsx,ts,tsx,json,css,scss}\"",
-    "lint": "eslint --fix",
+    "lint": "eslint . ",
+    "check": "npm run lint & node check-build.js",
     "lint-compact": "eslint --fix --format unix",
-    "dev": "nodemon server.js",
+    "dev": "npm run check && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,11 +21,19 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-validator": "^7.0.1"
+    "express-validator": "^7.0.1",
+    "mongoose": "^8.3.2",
+    "moongose": "^1.0.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
-    "morgan": "^1.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "esm": "^3.2.25",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "prettier-eslint": "^16.3.0",
